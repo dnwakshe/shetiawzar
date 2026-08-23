@@ -1,0 +1,176 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "nameEn": "Kuradi (Pickaxe)",
+      "nameMr": "कुराडी",
+      "nameHi": "कुराड़ी",
+      "descEn": "Handcrafted traditional pickaxe for digging and soil cultivation. Made by master blacksmiths from Rajasthan using time-tested techniques. Perfect for farmers and construction workers.",
+      "descMr": "हाताने घडवलेली परंपरागत कुराडी. राजस्थानच्या कुशल लोहारांनी निर्मित. माती खणण्यासाठी व शेतीसाठी आदर्श.",
+      "descHi": "हाथ से तैयार की गई परंपरागत कुराडी। राजस्थान के कुशल लुहारों द्वारा निर्मित। किसानों और निर्माण कार्यकर्ताओं के लिए आदर्श।",
+      "price": 450,
+      "currency": "₹",
+      "images": [
+        "https://images.unsplash.com/photo-1578562267180-aaecccadab01?w=800&q=80",
+        "https://images.unsplash.com/photo-1584622181563-430f63602d4b?w=800&q=80"
+      ],
+      "category": "tools",
+      "features": ["Handcrafted", "Durable", "Rajasthan Made", "Traditional"],
+      "weight": "1.5 kg",
+      "material": "Iron & Steel"
+    },
+    {
+      "id": 2,
+      "nameEn": "Khurpi (Garden Hoe)",
+      "nameMr": "खुरपी",
+      "nameHi": "खुरपी",
+      "descEn": "Multi-purpose garden hoe for weeding, loosening soil, and field preparation. Lightweight yet sturdy. Trusted by generations of Indian farmers.",
+      "descMr": "बहुउद्देशीय खुरपी. अडुलोट टाळण्यासाठी, मातीसाठी आणि शेत तयारीसाठी. हल्की परंतु मजबूत.",
+      "descHi": "बहु-उद्देश्यीय खुरपी। निराई, मिट्टी ढीली करने और खेत की तैयारी के लिए। भारतीय किसानों द्वारा विश्वास किया जाता है।",
+      "price": 350,
+      "currency": "₹",
+      "images": [
+        "https://images.unsplash.com/photo-1585098236013-69613b0b69a3?w=800&q=80",
+        "https://images.unsplash.com/photo-1552962331-acf39dc14cad?w=800&q=80"
+      ],
+      "category": "tools",
+      "features": ["Lightweight", "Multi-purpose", "Durable", "Best Seller"],
+      "weight": "800g",
+      "material": "Iron & Hardwood Handle"
+    },
+    {
+      "id": 3,
+      "nameEn": "Vila (Harrow)",
+      "nameMr": "विळा",
+      "nameHi": "विला",
+      "descEn": "Traditional harrow for breaking soil clods and field leveling. Essential for preparing fertile seedbeds. Handcrafted with authentic iron.",
+      "descMr": "मातीचे गोट तोडण्यासाठी व शेत समतल करण्यासाठी परंपरागत विळा. बीज पेटीसाठी आदर्श.",
+      "descHi": "मिट्टी के ढेलों को तोड़ने और खेत को समतल करने के लिए परंपरागत विला। बीज क्यारियों के लिए आवश्यक।",
+      "price": 550,
+      "currency": "₹",
+      "images": [
+        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
+      ],
+      "category": "tools",
+      "features": ["Soil Leveling", "Authentic", "Long-lasting"],
+      "weight": "2 kg",
+      "material": "Pure Iron"
+    },
+    {
+      "id": 4,
+      "nameEn": "Phaavda (Spade)",
+      "nameMr": "फावडे",
+      "nameHi": "फावड़ा",
+      "descEn": "Heavy-duty spade for digging, earth moving, and soil excavation. Built to last with reinforced edges. Favorite of farmers and laborers across India.",
+      "descMr": "मजबूत फावडे खणण्यासाठी व माती हलवण्यासाठी. बळकट व टिकाऊ.",
+      "descHi": "खोदने, मिट्टी हटाने और मिट्टी निकालने के लिए भारी-शुल्क वाला फावड़ा। भारतीय किसानों का पसंदीदा।",
+      "price": 480,
+      "currency": "₹",
+      "images": [
+        "https://images.unsplash.com/photo-1554224311-beee415c15c7?w=800&q=80"
+      ],
+      "category": "tools",
+      "features": ["Heavy-duty", "Reinforced Edges", "Soil Moving"],
+      "weight": "1.8 kg",
+      "material": "Steel & Iron"
+    },
+    {
+      "id": 5,
+      "nameEn": "Koyata (Sickle)",
+      "nameMr": "कोयता",
+      "nameHi": "कोयता",
+      "descEn": "Sharp and ergonomic sickle for cutting sugarcane, banana, vegetables and crops. Handcrafted with perfect blade angle for maximum efficiency.",
+      "descMr": "तीक्ष्ण कोयता ऊस, केळी व भाजीपाला तोडण्यासाठी. आरामदायक पकड़.",
+      "descHi": "ऊख, केले, सब्जियों और फसलों को काटने के लिए तीव्र और ergonomic कोयता। हाथ से तैयार किया गया।",
+      "price": 320,
+      "currency": "₹",
+      "images": [
+        "https://images.unsplash.com/photo-1585086614828-910e8455eab8?w=800&q=80"
+      ],
+      "category": "tools",
+      "features": ["Sharp Blade", "Ergonomic", "Crop Cutting"],
+      "weight": "600g",
+      "material": "High Carbon Steel"
+    },
+    {
+      "id": 6,
+      "nameEn": "Mattock (Kombda)",
+      "nameMr": "कोंबडा",
+      "nameHi": "कोंबड़ा",
+      "descEn": "Versatile mattock for hard ground, rock breaking, and tough soil work. Double-ended tool with pickaxe and flat blade sides.",
+      "descMr": "कठोर जमिनीचे काम करण्यासाठी बहुउद्देशीय कोंबडा. दोन टोक असलेले.",
+      "descHi": "कठोर जमीन, चट्टान तोड़ने और कठिन मिट्टी के काम के लिए बहुमुखी mattock।",
+      "price": 520,
+      "currency": "₹",
+      "images": [
+        "https://images.unsplash.com/photo-1591087331702-05c17605a501?w=800&q=80"
+      ],
+      "category": "tools",
+      "features": ["Double-ended", "Rock Breaking", "Heavy Duty"],
+      "weight": "2.2 kg",
+      "material": "Iron & Steel"
+    }
+  ],
+  "translations": {
+    "en": {
+      "shop": "Shop",
+      "products": "Products",
+      "price": "Price",
+      "orderNow": "Order on WhatsApp",
+      "addToCart": "Add to Cart",
+      "cart": "Cart",
+      "viewDetails": "View Details",
+      "specifications": "Specifications",
+      "weight": "Weight",
+      "material": "Material",
+      "category": "Category",
+      "features": "Features",
+      "zoomImage": "Click to zoom",
+      "backToShop": "← Back to Shop",
+      "language": "Language",
+      "hindi": "हिंदी",
+      "marathi": "मराठी",
+      "english": "English"
+    },
+    "mr": {
+      "shop": "दुकान",
+      "products": "उत्पादने",
+      "price": "किंमत",
+      "orderNow": "व्हाट्सअँप वर ऑर्डर करा",
+      "addToCart": "कार्टमध्ये जोडा",
+      "cart": "कार्ट",
+      "viewDetails": "तपशील पहा",
+      "specifications": "तपशील",
+      "weight": "वजन",
+      "material": "सामग्री",
+      "category": "श्रेणी",
+      "features": "वैशिष्ट्ये",
+      "zoomImage": "मोठे करण्यासाठी क्लिक करा",
+      "backToShop": "← दुकानात परत",
+      "language": "भाषा",
+      "hindi": "हिंदी",
+      "marathi": "मराठी",
+      "english": "English"
+    },
+    "hi": {
+      "shop": "दुकान",
+      "products": "उत्पाद",
+      "price": "कीमत",
+      "orderNow": "व्हाट्सएप पर ऑर्डर करें",
+      "addToCart": "कार्ट में जोड़ें",
+      "cart": "कार्ट",
+      "viewDetails": "विवरण देखें",
+      "specifications": "विनिर्देश",
+      "weight": "वजन",
+      "material": "सामग्री",
+      "category": "श्रेणी",
+      "features": "विशेषताएं",
+      "zoomImage": "ज़ूम करने के लिए क्लिक करें",
+      "backToShop": "← दुकान पर वापस",
+      "language": "भाषा",
+      "hindi": "हिंदी",
+      "marathi": "मराठी",
+      "english": "English"
+    }
+  }
+}

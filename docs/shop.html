@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - वाक्षे ॲग्रोटेक (Wakshe Agrotech)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Marathi:ital@0;1&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --gold: #C9A84C;
+            --gold-light: #F0C96B;
+            --gold-dim: #7A5C14;
+            --dark: #1A0F02;
+            --dark2: #2A1A06;
+            --dark3: #3D2810;
+            --cream: #F5E6C8;
+            --text: #E8D5A3;
+            --green: #2D5016;
+            --green-light: #4A7C2C;
+            --success: #10B981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--dark);
+            color: var(--text);
+            font-family: 'Tiro Devanagari Marathi', serif;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 6px;
+            border: 2px solid var(--gold-dim);
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(26, 15, 2, 0.96);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--gold-dim);
+            padding: 14px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            color: var(--gold);
+            font-size: 1.1rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--gold-dim);
+            text-decoration: none;
+            font-size: .85rem;
+            letter-spacing: 1px;
+            transition: color .3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold-light);
+        }
+
+        .lang-selector {
+            background: rgba(201, 168, 76, 0.1);
+            border: 1px solid var(--gold-dim);
+            padding: 5px 12px;
+            border-radius: 4px;
+            color: var(--gold);
+            font-size: .8rem;
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+        .lang-selector:hover {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.3rem;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--success);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .75rem;
+        }
+
+        @media(max-width: 600px) {
+            .nav-links {
+                display: none;
+            }
+            nav {
+                padding: 10px 15px;
+            }
+        }
+
+        .shop-header {
+            padding-top: 100px;
+            padding: 100px 20px 40px;
+            background: linear-gradient(180deg, rgba(61, 31, 4, 0.5) 0%, var(--dark) 100%);
+            text-align: center;
+            border-bottom: 1px solid var(--gold-dim);
+        }
+
+        .shop-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: var(--gold-light);
+            text-shadow: 0 0 40px rgba(201, 168, 76, .4);
+            margin-bottom: 10px;
+        }
+
+        .shop-subtitle {
+            color: var(--cream);
+            opacity: .85;
+            font-size: 1.1rem;
+        }
+
+        .filters-section {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 10px 18px;
+            background: rgba(201, 168, 76, 0.1);
+            border: 1px solid var(--gold-dim);
+            color: var(--gold);
+            cursor: pointer;
+            font-family: 'Tiro Devanagari Marathi', serif;
+            font-size: .9rem;
+            border-radius: 4px;
+            transition: all .3s;
+        }
+
+        .filter-btn.active {
+            background: var(--gold);
+            color: var(--dark);
+        }
+
+        .filter-btn:hover {
+            border-color: var(--gold);
+        }
+
+        .search-box {
+            padding: 10px 16px;
+            background: rgba(201, 168, 76, 0.1);
+            border: 1px solid var(--gold-dim);
+            color: var(--text);
+            font-family: inherit;
+            border-radius: 4px;
+            width: 250px;
+            transition: all .3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(201, 168, 76, 0.15);
+        }
+
+        .products-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 28px;
+        }
+
+        .product-card {
+            border: 1px solid rgba(201, 168, 76, .2);
+            background: rgba(201, 168, 76, .04);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all .4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .product-card:hover {
+            border-color: var(--gold);
+            background: rgba(201, 168, 76, .1);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(201, 168, 76, .2);
+        }
+
+        .product-image-wrapper {
+            position: relative;
+            overflow: hidden;
+            background: var(--dark2);
+            aspect-ratio: 1;
+            cursor: pointer;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .6s ease;
+            filter: sepia(8%) saturate(85%);
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.12);
+            filter: sepia(0%);
+        }
+
+        .zoom-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--gold-light);
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: .75rem;
+            opacity: 0;
+            transition: opacity .3s;
+        }
+
+        .product-card:hover .zoom-badge {
+            opacity: 1;
+        }
+
+        .product-info {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-category {
+            font-size: .75rem;
+            color: var(--gold-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .product-name {
+            font-size: 1.3rem;
+            color: var(--gold-light);
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .product-desc {
+            font-size: .85rem;
+            color: var(--cream);
+            opacity: .8;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .product-specs {
+            font-size: .75rem;
+            color: var(--gold-dim);
+            margin-bottom: 12px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(201, 168, 76, .1);
+        }
+
+        .spec-item {
+            margin-bottom: 4px;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            color: var(--gold-light);
+            font-weight: bold;
+        }
+
+        .whatsapp-btn {
+            flex: 1;
+            padding: 10px 14px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: .9rem;
+            font-weight: bold;
+            transition: all .3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(37, 211, 102, .4);
+        }
+
+        .product-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .product-modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--dark2);
+            border: 1px solid var(--gold-dim);
+            border-radius: 8px;
+            max-width: 900px;
+            width: 100%;
+            padding: 30px;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @media(max-width: 768px) {
+            .modal-content {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+        }
+
+        .modal-image {
+            width: 100%;
+            border: 1px solid var(--gold-dim);
+            border-radius: 4px;
+            cursor: zoom-in;
+        }
+
+        .modal-image.zoomed {
+            cursor: zoom-out;
+        }
+
+        .modal-info h2 {
+            font-size: 1.8rem;
+            color: var(--gold-light);
+            margin-bottom: 10px;
+        }
+
+        .modal-price {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .modal-specs {
+            background: rgba(201, 168, 76, .05);
+            padding: 16px;
+            border-radius: 4px;
+            border: 1px solid rgba(201, 168, 76, .2);
+            margin-bottom: 20px;
+        }
+
+        .modal-specs h4 {
+            color: var(--gold-light);
+            margin-bottom: 10px;
+            font-size: .95rem;
+        }
+
+        .spec-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(201, 168, 76, .1);
+            font-size: .85rem;
+        }
+
+        .spec-row:last-child {
+            border-bottom: none;
+        }
+
+        .spec-label {
+            color: var(--gold-dim);
+        }
+
+        .spec-value {
+            color: var(--cream);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .modal-whatsapp-btn {
+            flex: 1;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all .3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-whatsapp-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(37, 211, 102, .4);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--gold);
+            font-size: 2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all .3s;
+        }
+
+        .modal-close:hover {
+            background: rgba(201, 168, 76, .2);
+        }
+
+        .cart-sidebar {
+            position: fixed;
+            right: -350px;
+            top: 0;
+            width: 350px;
+            height: 100vh;
+            background: var(--dark2);
+            border-left: 1px solid var(--gold-dim);
+            z-index: 1500;
+            transition: right .3s ease;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gold-dim);
+        }
+
+        .cart-header h3 {
+            color: var(--gold-light);
+        }
+
+        .cart-close {
+            background: none;
+            border: none;
+            color: var(--gold);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            background: rgba(201, 168, 76, .05);
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(201, 168, 76, .1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: .9rem;
+        }
+
+        .cart-item-name {
+            color: var(--cream);
+            flex-grow: 1;
+        }
+
+        .cart-item-price {
+            color: var(--gold-light);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .cart-item-qty {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .qty-btn {
+            background: rgba(201, 168, 76, .2);
+            border: none;
+            color: var(--gold);
+            width: 20px;
+            height: 20px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: .75rem;
+        }
+
+        .cart-total {
+            background: rgba(201, 168, 76, .1);
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid var(--gold-dim);
+            margin-bottom: 15px;
+            text-align: right;
+        }
+
+        .cart-total-label {
+            color: var(--gold-dim);
+            font-size: .85rem;
+            margin-bottom: 5px;
+        }
+
+        .cart-total-amount {
+            font-size: 1.5rem;
+            color: var(--gold-light);
+            font-weight: bold;
+        }
+
+        .cart-checkout-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all .3s;
+        }
+
+        .cart-checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(37, 211, 102, .4);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gold-dim);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gold-dim);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            opacity: .5;
+        }
+
+        footer {
+            background: var(--dark);
+            border-top: 1px solid var(--gold-dim);
+            padding: 22px;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        footer p {
+            color: var(--gold-dim);
+            font-size: .78rem;
+            letter-spacing: 2px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gold);
+        }
+
+        @media(max-width: 768px) {
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <span class="nav-brand" onclick="window.location.href='/'">✦ वाक्षे ॲग्रोटेक</span>
+    <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/shop.html">Shop</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li>
+            <select class="lang-selector" id="langSelector" onchange="changeLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="mr">मराठी</option>
+                <option value="hi">हिंदी</option>
+            </select>
+        </li>
+        <li class="cart-icon" onclick="toggleCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" id="cartCount" style="display:none;">0</span>
+        </li>
+    </ul>
+</nav>
+
+<div class="shop-header">
+    <h1 class="shop-title" data-en="🛍 Shop" data-mr="🛍 दुकान" data-hi="🛍 दुकान">🛍 Shop</h1>
+    <p class="shop-subtitle" data-en="Handcrafted agricultural tools from Rajasthan" data-mr="राजस्थानच्या हाताने घडवलेल्या शेती अवजारे" data-hi="राजस्थान के हाथ से तैयार कृषि उपकरण">Handcrafted agricultural tools from Rajasthan</p>
+</div>
+
+<div class="filters-section">
+    <input type="text" class="search-box" id="searchBox" placeholder="Search products..." data-en-placeholder="Search products..." data-mr-placeholder="उत्पादने शोधा..." data-hi-placeholder="उत्पाद खोजें...">
+    <button class="filter-btn active" onclick="filterProducts('all')" data-en="All Products" data-mr="सर्व उत्पादने" data-hi="सभी उत्पाद">All Products</button>
+    <button class="filter-btn" onclick="filterProducts('tools')" data-en="Tools" data-mr="अवजारे" data-hi="उपकरण">Tools</button>
+</div>
+
+<div class="products-grid" id="productsGrid">
+    <div class="loading">
+        <p data-en="Loading products..." data-mr="उत्पादने लोड होत आहेत..." data-hi="उत्पाद लोड हो रहे हैं...">Loading products...</p>
+    </div>
+</div>
+
+<footer>
+    <p>✦ वाक्षे ॲग्रोटेक • वाक्षेवाडी, सांगली, महाराष्ट्र ✦</p>
+</footer>
+
+<!-- Product Modal -->
+<div class="product-modal" id="productModal">
+    <div class="modal-content" id="modalContent">
+        <button class="modal-close" onclick="closeProductModal()">&times;</button>
+    </div>
+</div>
+
+<!-- Cart Sidebar -->
+<div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+        <h3 data-en="Your Cart" data-mr="आपली कार्ट" data-hi="आपकी कार्ट">Your Cart</h3>
+        <button class="cart-close" onclick="toggleCart()">&times;</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-total">
+        <div class="cart-total-label" data-en="Total:" data-mr="एकूण:" data-hi="कुल:">Total:</div>
+        <div class="cart-total-amount" id="cartTotal">₹0</div>
+    </div>
+    <button class="cart-checkout-btn" onclick="checkoutCart()" data-en="Order on WhatsApp" data-mr="व्हाट्सअँप वर ऑर्डर करा" data-hi="व्हाट्सएप पर ऑर्डर करें">Order on WhatsApp</button>
+</div>
+
+<script>
+    let currentLanguage = 'en';
+    let productsData = {};
+    let cart = JSON.parse(localStorage.getItem('cart')) || {};
+    const WHATSAPP_NUMBER = '918788341895';
+
+    // Load products
+    fetch('/data/products.json')
+        .then(response => response.json())
+        .then(data => {
+            productsData = data;
+            renderProducts();
+            updateUI();
+        })
+        .catch(error => {
+            console.error('Error loading products:', error);
+            document.getElementById('productsGrid').innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><p data-en="Failed to load products" data-mr="उत्पादने लोड करण्यात अयशस्वी" data-hi="उत्पाद लोड करने में विफल">Failed to load products</p></div>';
+        });
+
+    function renderProducts(filter = 'all', searchTerm = '') {
+        const grid = document.getElementById('productsGrid');
+        let products = productsData.products || [];
+
+        if (filter !== 'all') {
+            products = products.filter(p => p.category === filter);
+        }
+
+        if (searchTerm) {
+            products = products.filter(p => 
+                p.nameEn.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                p.nameMr.includes(searchTerm) ||
+                p.nameHi.includes(searchTerm)
+            );
+        }
+
+        if (products.length === 0) {
+            grid.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;"><div class="empty-state-icon">📦</div><p data-en="No products found" data-mr="उत्पाद मिळाले नाहीत" data-hi="कोई उत्पाद नहीं मिला">No products found</p></div>';
+            updateLanguageDisplay();
+            return;
+        }
+
+        grid.innerHTML = products.map(product => `
+            <div class="product-card" onclick="openProductModal(${product.id})">
+                <div class="product-image-wrapper">
+                    <img src="${product.images[0]}" alt="${product.nameEn}" class="product-image" loading="lazy">
+                    <span class="zoom-badge" data-en="Click to zoom" data-mr="मोठे करण्यासाठी क्लिक करा" data-hi="ज़ूम करने के लिए क्लिक करें">🔍 Zoom</span>
+                </div>
+                <div class="product-info">
+                    <div class="product-category" data-en="Tools" data-mr="अवजारे" data-hi="उपकरण">Tools</div>
+                    <div class="product-name">${getTranslation(product, 'name')}</div>
+                    <div class="product-desc">${getTranslation(product, 'desc')}</div>
+                    <div class="product-specs">
+                        <div class="spec-item"><strong data-en="Weight:" data-mr="वजन:" data-hi="वजन:">Weight:</strong> ${product.weight}</div>
+                        <div class="spec-item"><strong data-en="Material:" data-mr="सामग्री:" data-hi="सामग्री:">Material:</strong> ${product.material}</div>
+                    </div>
+                    <div class="product-footer">
+                        <div class="product-price">₹${product.price}</div>
+                        <a href="https://wa.me/${WHATSAPP_NUMBER}?text=Hi, I'm interested in ${getTranslation(product, 'name')} (₹${product.price}). Can you provide more details?" target="_blank" class="whatsapp-btn" onclick="event.stopPropagation();">
+                            <i class="fab fa-whatsapp"></i>
+                            <span data-en="Order" data-mr="ऑर्डर" data-hi="ऑर्डर">Order</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        updateLanguageDisplay();
+    }
+
+    function openProductModal(productId) {
+        const product = productsData.products.find(p => p.id === productId);
+        const modal = document.getElementById('productModal');
+        const content = document.getElementById('modalContent');
+
+        content.innerHTML = `
+            <button class="modal-close" onclick="closeProductModal()">&times;</button>
+            <div>
+                <img src="${product.images[0]}" alt="${product.nameEn}" class="modal-image" id="modalImage" onclick="toggleImageZoom(event)">
+            </div>
+            <div class="modal-info">
+                <h2>${getTranslation(product, 'name')}</h2>
+                <div class="modal-price">₹${product.price}</div>
+                <p style="margin-bottom: 15px; line-height: 1.6;">${getTranslation(product, 'desc')}</p>
+                
+                <div class="modal-specs">
+                    <h4 data-en="Specifications" data-mr="तपशील" data-hi="विनिर्देश">Specifications</h4>
+                    <div class="spec-row">
+                        <span class="spec-label" data-en="Weight" data-mr="वजन" data-hi="वजन">Weight</span>
+                        <span class="spec-value">${product.weight}</span>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-label" data-en="Material" data-mr="सामग्री" data-hi="सामग्री">Material</span>
+                        <span class="spec-value">${product.material}</span>
+                    </div>
+                    <div class="spec-row">
+                        <span class="spec-label" data-en="Features" data-mr="वैशिष्ट्ये" data-hi="विशेषताएं">Features</span>
+                        <span class="spec-value">${product.features.join(', ')}</span>
+                    </div>
+                </div>
+
+                <div class="modal-buttons">
+                    <a href="https://wa.me/${WHATSAPP_NUMBER}?text=Hi, I'm interested in ${getTranslation(product, 'name')} (₹${product.price}). Can you provide more details?" target="_blank" class="modal-whatsapp-btn">
+                        <i class="fab fa-whatsapp"></i>
+                        <span data-en="Order on WhatsApp" data-mr="व्हाट्सअँप वर ऑर्डर करा" data-hi="व्हाट्सएप पर ऑर्डर करें">Order on WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+        `;
+
+        modal.classList.add('open');
+        updateLanguageDisplay();
+    }
+
+    function closeProductModal() {
+        document.getElementById('productModal').classList.remove('open');
+    }
+
+    function toggleImageZoom(e) {
+        e.target.classList.toggle('zoomed');
+    }
+
+    function filterProducts(category) {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        renderProducts(category, document.getElementById('searchBox').value);
+    }
+
+    document.getElementById('searchBox').addEventListener('input', (e) => {
+        renderProducts('all', e.target.value);
+    });
+
+    function changeLanguage(lang) {
+        currentLanguage = lang;
+        updateLanguageDisplay();
+    }
+
+    function updateLanguageDisplay() {
+        document.querySelectorAll('[data-en]').forEach(el => {
+            const key = `data-${currentLanguage}`;
+            if (el.hasAttribute(key)) {
+                el.textContent = el.getAttribute(key);
+            }
+        });
+
+        document.querySelectorAll('[data-en-placeholder]').forEach(el => {
+            const key = `data-${currentLanguage}-placeholder`;
+            if (el.hasAttribute(key)) {
+                el.placeholder = el.getAttribute(key);
+            }
+        });
+    }
+
+    function getTranslation(product, field) {
+        const fieldMap = {
+            'name': { en: 'nameEn', mr: 'nameMr', hi: 'nameHi' },
+            'desc': { en: 'descEn', mr: 'descMr', hi: 'descHi' }
+        };
+        return product[fieldMap[field][currentLanguage]];
+    }
+
+    function toggleCart() {
+        document.getElementById('cartSidebar').classList.toggle('open');
+    }
+
+    function updateUI() {
+        const cartCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+        const countBadge = document.getElementById('cartCount');
+        if (cartCount > 0) {
+            countBadge.textContent = cartCount;
+            countBadge.style.display = 'flex';
+        } else {
+            countBadge.style.display = 'none';
+        }
+        renderCartSidebar();
+    }
+
+    function renderCartSidebar() {
+        const cartItemsDiv = document.getElementById('cartItems');
+        const totalDiv = document.getElementById('cartTotal');
+
+        if (Object.keys(cart).length === 0) {
+            cartItemsDiv.innerHTML = '<div class="empty-cart"><p data-en="Your cart is empty" data-mr="आपली कार्ट रिक्त आहे" data-hi="आपकी कार्ट खाली है">Your cart is empty</p></div>';
+            totalDiv.textContent = '₹0';
+            updateLanguageDisplay();
+            return;
+        }
+
+        let total = 0;
+        cartItemsDiv.innerHTML = Object.entries(cart).map(([productId, qty]) => {
+            const product = productsData.products.find(p => p.id === parseInt(productId));
+            const itemTotal = product.price * qty;
+            total += itemTotal;
+            return `
+                <div class="cart-item">
+                    <span class="cart-item-name">${getTranslation(product, 'name')}</span>
+                    <span class="cart-item-price">₹${itemTotal}</span>
+                    <div class="cart-item-qty">
+                        <button class="qty-btn" onclick="updateCartQty(${productId}, -1)">−</button>
+                        <span>${qty}</span>
+                        <button class="qty-btn" onclick="updateCartQty(${productId}, 1)">+</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        totalDiv.textContent = `₹${total}`;
+        updateLanguageDisplay();
+    }
+
+    function updateCartQty(productId, change) {
+        const newQty = (cart[productId] || 0) + change;
+        if (newQty <= 0) {
+            delete cart[productId];
+        } else {
+            cart[productId] = newQty;
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateUI();
+    }
+
+    function checkoutCart() {
+        if (Object.keys(cart).length === 0) return;
+
+        let message = 'Hi, I would like to order:\n\n';
+        Object.entries(cart).forEach(([productId, qty]) => {
+            const product = productsData.products.find(p => p.id === parseInt(productId));
+            message += `• ${getTranslation(product, 'name')} x${qty} = ₹${product.price * qty}\n`;
+        });
+
+        const total = Object.entries(cart).reduce((sum, [productId, qty]) => {
+            const product = productsData.products.find(p => p.id === parseInt(productId));
+            return sum + (product.price * qty);
+        }, 0);
+
+        message += `\nTotal: ₹${total}\n\nPlease confirm availability and delivery.`;
+
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    // Initialize
+    updateLanguageDisplay();
+</script>
+
+</body>
+</html>
