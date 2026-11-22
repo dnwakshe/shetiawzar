@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 import 'package:agrotech/main.dart';
-import 'package:agrotech/models/product.dart';
 import 'package:agrotech/providers/catalog_provider.dart';
 import 'package:agrotech/services/catalog_repository.dart';
 

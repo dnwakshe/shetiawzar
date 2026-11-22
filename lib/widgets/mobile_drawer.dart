@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../providers/catalog_provider.dart';
+import '../services/launcher_helper.dart';
 import '../theme/app_theme.dart';
 import 'admin_login_dialog.dart';
 
@@ -35,33 +35,103 @@ class MobileDrawer extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-            const Text(
-              'About Wakshe Agrotech',
-              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+            const Expanded(
+              child: Text(
+                'वाक्षे ॲग्रोटेक',
+                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+              ),
             ),
           ],
         ),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'वाक्षे ॲग्रोटेक (Wakshe Agrotech)',
-              style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.green),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Crafting heavy-duty, hand-forged agricultural tools with high-carbon steel for farmers across India.\n\nEvery tool is shaped, tempered and sharpened by seasoned artisans in Maharashtra for maximum durability in field conditions.',
-              style: TextStyle(fontSize: 13, color: AppColors.muted, height: 1.4),
-            ),
-            SizedBox(height: 14),
-            Text(
-              '📍 Maharashtra, India · All-India Delivery',
-              style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700),
-            ),
-          ],
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'प्रो. प्रा. सौ. माया मोहन वाक्षे',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 14,
+                  color: AppColors.green,
+                ),
+              ),
+              const Text(
+                'शेती अवजार व्यापारी',
+                style: TextStyle(fontSize: 12, color: AppColors.muted, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppColors.featureBg,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.line),
+                ),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      LauncherHelper.qualityQuote,
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.green,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      LauncherHelper.trustTagline,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.gold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'वाक्षे ॲग्रोटेक — शिवकालीन परंपरेतील राजस्थानी लोहारांनी घडवलेली पारंपरिक व टिकाऊ शेती अवजारे. प्रत्येक अवजार उच्च दर्जाच्या लोखंड/स्टीलपासून बनवलेले असून दीर्घकाळ धार टिकवून ठेवते.',
+                style: TextStyle(fontSize: 12.5, color: AppColors.ink, height: 1.4),
+              ),
+              const SizedBox(height: 14),
+              const Text(
+                '📍 संपर्क व कारखाना पत्ता:',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.green),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                LauncherHelper.fullAddress,
+                style: TextStyle(fontSize: 11.5, color: AppColors.muted, height: 1.3),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                '📞 मोबाईल: ${LauncherHelper.phoneDisplay}',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.ink),
+              ),
+            ],
+          ),
         ),
         actions: [
+          TextButton.icon(
+            icon: const Icon(Icons.phone, size: 16),
+            label: const Text('Call'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              LauncherHelper.callSupport();
+            },
+          ),
+          TextButton.icon(
+            icon: const Icon(Icons.map, size: 16),
+            label: const Text('Map'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              LauncherHelper.openMap();
+            },
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.green,
@@ -85,7 +155,7 @@ class MobileDrawer extends StatelessWidget {
             // Drawer Header with Official Logo & Branding
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 22),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               decoration: const BoxDecoration(
                 color: AppColors.green,
                 gradient: LinearGradient(
@@ -118,7 +188,7 @@ class MobileDrawer extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   const Text(
                     'WAKSHE AGROTECH',
                     style: TextStyle(
@@ -130,12 +200,32 @@ class MobileDrawer extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   const Text(
-                    'TOOLS FOR EVERY FIELD · वाक्षे ॲग्रोटेक',
+                    'वाक्षे ॲग्रोटेक · शेती अवजारे',
                     style: TextStyle(
                       color: Color(0xFFC7D8C9),
-                      fontSize: 10,
+                      fontSize: 11,
                       fontWeight: FontWeight.w700,
-                      letterSpacing: 1.2,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Proprietor Credit Badge
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(
+                        color: AppColors.gold.withValues(alpha: 0.6),
+                      ),
+                    ),
+                    child: const Text(
+                      'प्रो. प्रा. सौ. माया मोहन वाक्षे',
+                      style: TextStyle(
+                        color: AppColors.gold,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -331,6 +421,28 @@ class MobileDrawer extends StatelessWidget {
                     ),
                   ),
 
+                  // Direct Calling Support (Owner / Support)
+                  ListTile(
+                    leading: const Icon(
+                      Icons.phone_in_talk,
+                      color: AppColors.green,
+                    ),
+                    title: const Text(
+                      'Call Support (थेट संपर्क)',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: const Text(
+                      '${LauncherHelper.phoneDisplay} · प्रो. माया वाक्षे',
+                      style: TextStyle(fontSize: 11, color: AppColors.muted),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 13, color: AppColors.muted),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      LauncherHelper.callSupport();
+                    },
+                  ),
+
+                  // WhatsApp Support
                   ListTile(
                     leading: const Icon(
                       Icons.chat_outlined,
@@ -341,23 +453,37 @@ class MobileDrawer extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     subtitle: const Text(
-                      'Chat with tool specialists',
+                      'Chat with tool specialists (1-click)',
                       style: TextStyle(fontSize: 11, color: AppColors.muted),
                     ),
+                    trailing: const Icon(Icons.arrow_forward_ios, size: 13, color: AppColors.muted),
                     onTap: () {
                       Navigator.of(context).pop();
                       final msg = provider.cart.isNotEmpty
                           ? provider.generateEnquiryMessage()
-                          : 'Hello Wakshe Agrotech, I have an enquiry about agricultural tools.';
-                      Clipboard.setData(ClipboardData(text: msg));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          backgroundColor: AppColors.green,
-                          content: Text(
-                            'WhatsApp enquiry message copied to clipboard!',
-                          ),
-                        ),
-                      );
+                          : 'नमस्कार, मला वाक्षे ॲग्रोटेक (प्रो. माया वाक्षे) शेती अवजारांबद्दल माहिती हवी आहे.';
+                      LauncherHelper.openWhatsApp(msg);
+                    },
+                  ),
+
+                  // Google Maps Location
+                  ListTile(
+                    leading: const Icon(
+                      Icons.location_on_outlined,
+                      color: AppColors.green,
+                    ),
+                    title: const Text(
+                      'Store & Factory Location',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: const Text(
+                      'वाक्षेवाडी, आटपाडी, सांगली (Google Maps)',
+                      style: TextStyle(fontSize: 11, color: AppColors.muted),
+                    ),
+                    trailing: const Icon(Icons.open_in_new, size: 14, color: AppColors.muted),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      LauncherHelper.openMap();
                     },
                   ),
 
@@ -371,7 +497,7 @@ class MobileDrawer extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     subtitle: const Text(
-                      'Handcrafted tool legacy since 2020',
+                      'शिवकालीन परंपरा व लोहारांची कारागिरी',
                       style: TextStyle(fontSize: 11, color: AppColors.muted),
                     ),
                     onTap: () {

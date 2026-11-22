@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../models/product.dart';
 import '../providers/catalog_provider.dart';
+import '../services/launcher_helper.dart';
 import '../theme/app_theme.dart';
 
 /// Modal bottom sheet presenting complete product specifications,
@@ -239,8 +239,43 @@ class ProductDetailsSheet extends StatelessWidget {
                         _buildSpecRow('Material', 'Hand-forged high-carbon steel'),
                         _buildSpecRow('Finish', 'Tempered edge with protective coat'),
                         _buildSpecRow('Category', product.category),
-                        _buildSpecRow('Origin', 'Wakshe Agrotech Forge, Maharashtra'),
-                        _buildSpecRow('Quality', '100% field-tested farmer grade'),
+                        _buildSpecRow('Tradition', 'राजस्थानी लोहारांची पारंपरिक कारागिरी'),
+                        _buildSpecRow('Proprietor', LauncherHelper.proprietor),
+                        _buildSpecRow('Quality', LauncherHelper.craftsmanshipMotto),
+                        _buildSpecRow('Location', 'वाक्षेवाडी, आटपाडी, सांगली'),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+                  // Support Dial Container
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: AppColors.featureBg,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: AppColors.line),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.phone_in_talk, size: 16, color: AppColors.green),
+                        const SizedBox(width: 8),
+                        const Expanded(
+                          child: Text(
+                            'संपर्क: ${LauncherHelper.phoneDisplay} (प्रो. माया वाक्षे)',
+                            style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: AppColors.ink),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            visualDensity: VisualDensity.compact,
+                            foregroundColor: AppColors.green,
+                          ),
+                          onPressed: () => LauncherHelper.callSupport(),
+                          child: const Text('Call Now', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                        ),
                       ],
                     ),
                   ),
@@ -271,16 +306,8 @@ class ProductDetailsSheet extends StatelessWidget {
                     ),
                     onPressed: () {
                       final enquiry =
-                          'Hello Wakshe Agrotech, I would like to enquire about ${product.name} (${product.formattedPrice}).';
-                      Clipboard.setData(ClipboardData(text: enquiry));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          backgroundColor: AppColors.green,
-                          content: Text(
-                            'Enquiry for WhatsApp copied to clipboard!',
-                          ),
-                        ),
-                      );
+                          'नमस्कार, मला ${product.name} (${product.formattedPrice}) या शेती अवजाराबद्दल अधिक माहिती हवी आहे.';
+                      LauncherHelper.openWhatsApp(enquiry);
                     },
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
