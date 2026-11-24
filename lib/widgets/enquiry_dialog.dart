@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../models/product.dart';
 import '../providers/catalog_provider.dart';
+import '../services/enquiry_notification_service.dart';
 import '../services/launcher_helper.dart';
 import '../theme/app_theme.dart';
 
@@ -96,6 +97,15 @@ class _EnquiryDialogState extends State<EnquiryDialog> {
     widget.provider.recordEnquiry(
       name: name,
       phone: phone,
+      notes: notes,
+      itemsSummary: itemsSummary,
+      totalAmount: totalAmt,
+    );
+
+    // Dispatch background alerts via Free Telegram Bot & Email
+    EnquiryNotificationService.dispatchAllAlerts(
+      customerName: name,
+      customerPhone: phone,
       notes: notes,
       itemsSummary: itemsSummary,
       totalAmount: totalAmt,

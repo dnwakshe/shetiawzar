@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:agrotech/providers/catalog_provider.dart';
 import 'package:agrotech/services/catalog_repository.dart';
+import 'package:agrotech/services/enquiry_notification_service.dart';
 import 'package:agrotech/services/launcher_helper.dart';
 import 'package:agrotech/widgets/enquiry_dialog.dart';
 
@@ -13,12 +14,14 @@ void main() {
 
     setUp(() {
       LauncherHelper.enableLauncher = false;
+      EnquiryNotificationService.enableHttp = false;
       repository = InMemoryCatalogRepository();
       provider = CatalogProvider(repository: repository);
     });
 
     tearDown(() {
       LauncherHelper.enableLauncher = true;
+      EnquiryNotificationService.enableHttp = true;
     });
 
     testWidgets('Enquiry dialog validation and successful placement',

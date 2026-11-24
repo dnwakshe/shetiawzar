@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../models/product.dart';
 import '../providers/catalog_provider.dart';
+import '../services/enquiry_notification_service.dart';
 import '../services/launcher_helper.dart';
 import '../theme/app_theme.dart';
 import '../widgets/admin_login_dialog.dart';
@@ -62,6 +63,123 @@ class _HomeShellState extends State<HomeShell> {
       context: context,
       builder: (ctx) =>
           _ProductEditDialog(provider: provider, product: productToEdit),
+    );
+  }
+
+  void _showNotificationConfigDialog(BuildContext context) {
+    final tokenController = TextEditingController(
+      text: EnquiryNotificationService.telegramBotToken.contains('YOUR_')
+          ? ''
+          : EnquiryNotificationService.telegramBotToken,
+    );
+    final chatIdController = TextEditingController(
+      text: EnquiryNotificationService.telegramChatId.contains('YOUR_')
+          ? ''
+          : EnquiryNotificationService.telegramChatId,
+    );
+    final emailController =
+        TextEditingController(text: EnquiryNotificationService.adminEmail);
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Row(
+          children: [
+            Icon(Icons.notifications_active, color: AppColors.green),
+            SizedBox(width: 8),
+            Text(
+              'Enquiry Alert Settings',
+              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Receive instant enquiry alerts on your Telegram and Email when a farmer places an order.',
+                style: TextStyle(fontSize: 12, color: AppColors.muted),
+              ),
+              const SizedBox(height: 14),
+              const Text(
+                'Admin Email (मोफत ईमेल सूचना):',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              ),
+              const SizedBox(height: 4),
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  hintText: 'e.g. your-email@gmail.com',
+                  isDense: true,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'Telegram Bot Token (Optional):',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              ),
+              const SizedBox(height: 4),
+              TextField(
+                controller: tokenController,
+                decoration: InputDecoration(
+                  hintText: 'Token from @BotFather',
+                  isDense: true,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'Telegram Chat ID (Optional):',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              ),
+              const SizedBox(height: 4),
+              TextField(
+                controller: chatIdController,
+                decoration: InputDecoration(
+                  hintText: 'Chat ID from @userinfobot',
+                  isDense: true,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.green,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              if (emailController.text.trim().isNotEmpty) {
+                EnquiryNotificationService.adminEmail = emailController.text.trim();
+              }
+              if (tokenController.text.trim().isNotEmpty) {
+                EnquiryNotificationService.telegramBotToken =
+                    tokenController.text.trim();
+              }
+              if (chatIdController.text.trim().isNotEmpty) {
+                EnquiryNotificationService.telegramChatId =
+                    chatIdController.text.trim();
+              }
+              Navigator.pop(ctx);
+              setState(() {});
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Alert settings updated!')),
+              );
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1075,6 +1193,107 @@ class _HomeShellState extends State<HomeShell> {
             ],
           ),
           const SizedBox(height: 20),
+
+          // Instant Enquiry Notifications Status Card
+          Container(
+            padding: EdgeInsets.all(isMobile ? 14 : 16),
+            decoration: BoxDecoration(
+              color: AppColors.featureBg,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.line),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Expanded(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.notifications_active_outlined, color: AppColors.green, size: 20),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Telegram & Email Enquiry Alerts',
+                              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.settings_outlined, size: 18, color: AppColors.green),
+                      tooltip: 'Configure Alerts',
+                      visualDensity: VisualDensity.compact,
+                      onPressed: () => _showNotificationConfigDialog(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Automated alerts are instantly dispatched to the admin upon customer enquiry.',
+                  style: TextStyle(fontSize: 12, color: AppColors.muted),
+                ),
+                const SizedBox(height: 10),
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 8,
+                  children: [
+                    Container(
+                      constraints: BoxConstraints(maxWidth: isMobile ? 260 : 360),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppColors.line),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.send, size: 13, color: Color(0xFF0088CC)),
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              'Telegram: ${EnquiryNotificationService.telegramBotToken.contains('YOUR_') ? 'Setup needed' : 'Active'}',
+                              style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      constraints: BoxConstraints(maxWidth: isMobile ? 260 : 360),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppColors.line),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.email_outlined, size: 14, color: AppColors.green),
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              'Email: ${EnquiryNotificationService.adminEmail}',
+                              style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
 
           // Main Card
           Container(
