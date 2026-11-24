@@ -113,6 +113,11 @@ class MobileDrawer extends StatelessWidget {
                 '📞 मोबाईल: ${LauncherHelper.phoneDisplay}',
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.ink),
               ),
+              const SizedBox(height: 6),
+              const Text(
+                '📧 ईमेल: ${LauncherHelper.email}',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.ink),
+              ),
             ],
           ),
         ),
@@ -461,6 +466,27 @@ class MobileDrawer extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).pop();
                       EnquiryDialog.show(context, provider: provider);
+                    },
+                  ),
+
+                  // Email Support
+                  ListTile(
+                    leading: const Icon(
+                      Icons.email_outlined,
+                      color: AppColors.green,
+                    ),
+                    title: const Text(
+                      'Email Support (ईमेल संपर्क)',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: const Text(
+                      LauncherHelper.email,
+                      style: TextStyle(fontSize: 11, color: AppColors.muted),
+                    ),
+                    trailing: const Icon(Icons.open_in_new, size: 14, color: AppColors.muted),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      LauncherHelper.openEmail();
                     },
                   ),
 

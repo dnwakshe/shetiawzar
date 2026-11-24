@@ -16,7 +16,7 @@ class EnquiryNotificationService {
 
   // --- Email Alert Configuration ---
   // Default notification email address for store alerts
-  static String adminEmail = 'dnwakshe@gmail.com';
+  static String adminEmail = 'waksheagrotech@gmail.com';
 
   /// Sends an instant Telegram push alert to the admin's phone.
   static Future<bool> sendTelegramAlert({

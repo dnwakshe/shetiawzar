@@ -14,6 +14,7 @@ class LauncherHelper {
   static const String phone = '+918788341895';
   static const String phoneDisplay = '87 88 34 18 95';
   static const String whatsappNumber = '918788341895';
+  static const String email = 'waksheagrotech@gmail.com';
 
   // Address & Location
   static const String addressVillage = 'वाक्षेवाडी, पोस्ट : निंबवडे';
@@ -41,6 +42,20 @@ class LauncherHelper {
     if (!enableLauncher) return true;
     try {
       final uri = Uri.parse('tel:$phone');
+      if (await canLaunchUrl(uri)) {
+        return await launchUrl(uri);
+      }
+    } catch (_) {}
+    return false;
+  }
+
+  /// Launch email client for customer support.
+  static Future<bool> openEmail([String? subject, String? body]) async {
+    if (!enableLauncher) return true;
+    try {
+      final sub = Uri.encodeComponent(subject ?? 'Wakshe Agrotech Inquiry / चौकशी');
+      final b = Uri.encodeComponent(body ?? '');
+      final uri = Uri.parse('mailto:$email?subject=$sub&body=$b');
       if (await canLaunchUrl(uri)) {
         return await launchUrl(uri);
       }

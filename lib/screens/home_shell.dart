@@ -112,7 +112,7 @@ class _HomeShellState extends State<HomeShell> {
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
-                  hintText: 'e.g. your-email@gmail.com',
+                  hintText: 'e.g. waksheagrotech@gmail.com',
                   isDense: true,
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                 ),
@@ -2388,6 +2388,20 @@ class _HomeShellState extends State<HomeShell> {
                       ),
                     ),
                     InkWell(
+                      onTap: () => LauncherHelper.openEmail(),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.email_outlined, size: 13, color: AppColors.lime),
+                          SizedBox(width: 4),
+                          Text(
+                            LauncherHelper.email,
+                            style: TextStyle(color: AppColors.lime, fontSize: 11.5),
+                          ),
+                        ],
+                      ),
+                    ),
+                    InkWell(
                       onTap: () => LauncherHelper.openMap(),
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
@@ -2458,6 +2472,21 @@ class _HomeShellState extends State<HomeShell> {
                           Text(
                             LauncherHelper.phoneDisplay,
                             style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    InkWell(
+                      onTap: () => LauncherHelper.openEmail(),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.email_outlined, size: 14, color: AppColors.lime),
+                          SizedBox(width: 5),
+                          Text(
+                            LauncherHelper.email,
+                            style: TextStyle(color: AppColors.lime, fontSize: 12),
                           ),
                         ],
                       ),
