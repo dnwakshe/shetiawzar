@@ -4,6 +4,7 @@ import '../providers/catalog_provider.dart';
 import '../services/launcher_helper.dart';
 import '../theme/app_theme.dart';
 import 'admin_login_dialog.dart';
+import 'enquiry_dialog.dart';
 
 /// Responsive side drawer for mobile application navigation,
 /// providing customer browsing tabs, cart access, and secure
@@ -459,10 +460,7 @@ class MobileDrawer extends StatelessWidget {
                     trailing: const Icon(Icons.arrow_forward_ios, size: 13, color: AppColors.muted),
                     onTap: () {
                       Navigator.of(context).pop();
-                      final msg = provider.cart.isNotEmpty
-                          ? provider.generateEnquiryMessage()
-                          : 'नमस्कार, मला वाक्षे ॲग्रोटेक (प्रो. माया वाक्षे) शेती अवजारांबद्दल माहिती हवी आहे.';
-                      LauncherHelper.openWhatsApp(msg);
+                      EnquiryDialog.show(context, provider: provider);
                     },
                   ),
 

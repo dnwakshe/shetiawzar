@@ -33,33 +33,45 @@ class LauncherHelper {
   static const String traditionNotice =
       'राजस्थानी लोहारांनी घडवलेली पारंपरिक शेती अवजारे • Rajasthan Handcrafted';
 
+  /// Flag to enable/disable external OS intents (useful in automated test environments)
+  static bool enableLauncher = true;
+
   /// Launch direct phone dialer for customer support.
   static Future<bool> callSupport() async {
-    final uri = Uri.parse('tel:$phone');
-    if (await canLaunchUrl(uri)) {
-      return await launchUrl(uri);
-    }
+    if (!enableLauncher) return true;
+    try {
+      final uri = Uri.parse('tel:$phone');
+      if (await canLaunchUrl(uri)) {
+        return await launchUrl(uri);
+      }
+    } catch (_) {}
     return false;
   }
 
   /// Launch WhatsApp chat with pre-filled message.
   static Future<bool> openWhatsApp([String? message]) async {
-    final defaultMsg =
-        'नमस्कार, मला वाक्षे ॲग्रोटेक (प्रो. माया वाक्षे) शेती अवजारांबद्दल माहिती हवी आहे.';
-    final text = Uri.encodeComponent(message ?? defaultMsg);
-    final uri = Uri.parse('https://wa.me/$whatsappNumber?text=$text');
-    if (await canLaunchUrl(uri)) {
-      return await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
+    if (!enableLauncher) return true;
+    try {
+      final defaultMsg =
+          'नमस्कार, मला वाक्षे ॲग्रोटेक (प्रो. माया वाक्षे) शेती अवजारांबद्दल माहिती हवी आहे.';
+      final text = Uri.encodeComponent(message ?? defaultMsg);
+      final uri = Uri.parse('https://wa.me/$whatsappNumber?text=$text');
+      if (await canLaunchUrl(uri)) {
+        return await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
+    } catch (_) {}
     return false;
   }
 
   /// Open Google Maps location in external browser or Maps application.
   static Future<bool> openMap() async {
-    final uri = Uri.parse(mapsUrl);
-    if (await canLaunchUrl(uri)) {
-      return await launchUrl(uri, mode: LaunchMode.externalApplication);
-    }
+    if (!enableLauncher) return true;
+    try {
+      final uri = Uri.parse(mapsUrl);
+      if (await canLaunchUrl(uri)) {
+        return await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
+    } catch (_) {}
     return false;
   }
 }

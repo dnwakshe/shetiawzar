@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../models/product.dart';
@@ -7,6 +6,7 @@ import '../providers/catalog_provider.dart';
 import '../services/launcher_helper.dart';
 import '../theme/app_theme.dart';
 import '../widgets/admin_login_dialog.dart';
+import '../widgets/enquiry_dialog.dart';
 import '../widgets/mobile_drawer.dart';
 import '../widgets/product_details_sheet.dart';
 import '../widgets/responsive_breakpoints.dart';
@@ -1836,15 +1836,105 @@ class _HomeShellState extends State<HomeShell> {
                   icon: const Icon(Icons.send_rounded, size: 16),
                   label: const Text('Enquire via WhatsApp'),
                   onPressed: () {
-                    final msg = provider.cart.isNotEmpty
-                        ? provider.generateEnquiryMessage()
-                        : 'नमस्कार, मला वाक्षे ॲग्रोटेक (प्रो. माया वाक्षे) शेती अवजारांबद्दल माहिती हवी आहे.';
-                    LauncherHelper.openWhatsApp(msg);
+                    EnquiryDialog.show(context, provider: provider);
                   },
                 ),
               ],
             ),
           ),
+
+          // Recent Customer Enquiries (if placed during session)
+          if (provider.enquiries.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AppColors.line),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(Icons.history_rounded, color: AppColors.green, size: 20),
+                      const SizedBox(width: 8),
+                      const Expanded(
+                        child: Text(
+                          'मागील चौकशी नोंदी (Placed Enquiries)',
+                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: AppColors.inStockBg,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          '${provider.enquiries.length}',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.inStockText,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  ...provider.enquiries.map(
+                    (enq) => Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.featureBg,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: AppColors.line),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                enq.customerName,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 13.5,
+                                  color: AppColors.ink,
+                                ),
+                              ),
+                              Text(
+                                enq.formattedDate,
+                                style: const TextStyle(fontSize: 10.5, color: AppColors.muted),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            '📱 ${enq.customerPhone}',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.green,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '🌾 ${enq.itemsSummary}',
+                            style: const TextStyle(fontSize: 12, color: AppColors.ink),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
 
           const SizedBox(height: 16),
 
@@ -2625,17 +2715,8 @@ class _CartBottomSheet extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      final enquiry = provider.generateEnquiryMessage();
-                      Clipboard.setData(ClipboardData(text: enquiry));
                       Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          backgroundColor: AppColors.green,
-                          content: Text(
-                            'Enquiry message copied to clipboard! Ready to share via WhatsApp.',
-                          ),
-                        ),
-                      );
+                      EnquiryDialog.show(context, provider: provider);
                     },
                     child: const Text(
                       'Place enquiry',

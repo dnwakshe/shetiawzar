@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../models/cart_item.dart';
+import '../models/enquiry_record.dart';
 import '../models/product.dart';
 import '../services/catalog_repository.dart';
 
@@ -35,6 +36,7 @@ class CatalogProvider extends ChangeNotifier {
   String get activeCategory => _activeCategory;
   String get searchQuery => _searchQuery;
   List<Product> get allProducts => List.unmodifiable(_products);
+  List<Product> get products => List.unmodifiable(_products);
   List<CartItem> get cart => List.unmodifiable(_cart);
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
@@ -217,13 +219,76 @@ class CatalogProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Generates the product enquiry WhatsApp text as defined in the HTML demo
-  String generateEnquiryMessage() {
+  // --- Customer Enquiries Storage & Tracking ---
+  final List<EnquiryRecord> _enquiries = [];
+  List<EnquiryRecord> get enquiries => List.unmodifiable(_enquiries);
+
+  /// Records a placed enquiry with customer details and item summary
+  EnquiryRecord recordEnquiry({
+    required String name,
+    required String phone,
+    String? notes,
+    required String itemsSummary,
+    required double totalAmount,
+  }) {
+    final record = EnquiryRecord(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      customerName: name.trim(),
+      customerPhone: phone.trim(),
+      notes: notes?.trim().isNotEmpty == true ? notes!.trim() : null,
+      itemsSummary: itemsSummary,
+      totalAmount: totalAmount,
+      createdAt: DateTime.now(),
+    );
+    _enquiries.insert(0, record);
+    notifyListeners();
+    return record;
+  }
+
+  /// Generates the product enquiry WhatsApp text including optional customer details
+  String generateEnquiryMessage({
+    String? userName,
+    String? userPhone,
+    String? notes,
+  }) {
     if (_cart.isEmpty) return '';
-    final lines = _cart
-        .map((item) =>
-            '${item.product.name} x ${item.quantity} - ₹${item.totalPrice.round()}')
-        .join('\n');
-    return 'Hello Wakshe Agrotech, I would like to enquire about:\n$lines\nTotal: $formattedCartTotal';
+    final buffer = StringBuffer();
+    buffer.writeln('नमस्कार वाक्षे ॲग्रोटेक, नवीन शेती अवजार चौकशी:');
+    if (userName != null && userName.trim().isNotEmpty) {
+      buffer.writeln('👤 ग्राहक नाव: ${userName.trim()}');
+    }
+    if (userPhone != null && userPhone.trim().isNotEmpty) {
+      buffer.writeln('📱 संपर्क मोबाईल: ${userPhone.trim()}');
+    }
+    if (notes != null && notes.trim().isNotEmpty) {
+      buffer.writeln('📝 संदेश / पत्ता: ${notes.trim()}');
+    }
+    buffer.writeln('\n🛒 निवडलेली अवजारे:');
+    for (final item in _cart) {
+      buffer.writeln('• ${item.product.name} x ${item.quantity} - ₹${item.totalPrice.round()}');
+    }
+    buffer.writeln('\nएकूण रक्कम (Total): $formattedCartTotal');
+    buffer.writeln('कृपया उपलब्धता व डिलिव्हरी माहिती द्यावी.');
+    return buffer.toString();
+  }
+
+  /// Generates enquiry message for an individual tool
+  String generateSingleProductEnquiry({
+    required Product product,
+    required String userName,
+    required String userPhone,
+    String? notes,
+  }) {
+    final buffer = StringBuffer();
+    buffer.writeln('नमस्कार वाक्षे ॲग्रोटेक, शेती अवजार चौकशी:');
+    buffer.writeln('👤 ग्राहक नाव: ${userName.trim()}');
+    buffer.writeln('📱 संपर्क मोबाईल: ${userPhone.trim()}');
+    buffer.writeln('🌾 अवजार: ${product.name} (${product.formattedPrice})');
+    buffer.writeln('वर्ग: ${product.category} · ${product.tag}');
+    if (notes != null && notes.trim().isNotEmpty) {
+      buffer.writeln('📝 संदेश / पत्ता: ${notes.trim()}');
+    }
+    buffer.writeln('कृपया उपलब्धता व डिलिव्हरी माहिती द्यावी.');
+    return buffer.toString();
   }
 }

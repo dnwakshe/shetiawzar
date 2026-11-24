@@ -4,6 +4,7 @@ import '../models/product.dart';
 import '../providers/catalog_provider.dart';
 import '../services/launcher_helper.dart';
 import '../theme/app_theme.dart';
+import 'enquiry_dialog.dart';
 
 /// Modal bottom sheet presenting complete product specifications,
 /// high-resolution imagery/artwork, pricing in INR, stock levels,
@@ -305,9 +306,12 @@ class ProductDetailsSheet extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      final enquiry =
-                          'नमस्कार, मला ${product.name} (${product.formattedPrice}) या शेती अवजाराबद्दल अधिक माहिती हवी आहे.';
-                      LauncherHelper.openWhatsApp(enquiry);
+                      Navigator.of(context).pop();
+                      EnquiryDialog.show(
+                        context,
+                        provider: provider,
+                        singleProduct: product,
+                      );
                     },
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
