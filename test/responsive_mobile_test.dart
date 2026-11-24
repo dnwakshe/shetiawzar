@@ -216,9 +216,19 @@ void main() {
           gridView.gridDelegate as SliverGridDelegateWithFixedCrossAxisCount;
       expect(delegate.crossAxisCount, 4);
 
-      // Test switching to Admin View on desktop
+      // Test switching to Admin View on desktop with passcode authentication
       await tester.tap(find.text('Admin'));
       await tester.pumpAndSettle();
+
+      if (find.text('Administrator Access').evaluate().isNotEmpty) {
+        await tester.enterText(find.byType(TextField).last, 'wakshe@123');
+        await tester.tap(find.text('Unlock Dashboard'));
+        await tester.pumpAndSettle();
+      } else if (find.text('प्रशासक सुरक्षित प्रवेश').evaluate().isNotEmpty) {
+        await tester.enterText(find.byType(TextField).last, 'wakshe@123');
+        await tester.tap(find.text('Unlock Dashboard'));
+        await tester.pumpAndSettle();
+      }
 
       expect(find.text('Admin dashboard'), findsOneWidget);
       expect(find.byType(DataTable), findsOneWidget);

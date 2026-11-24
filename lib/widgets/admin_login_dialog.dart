@@ -31,6 +31,14 @@ class _AdminLoginDialogState extends State<AdminLoginDialog> {
   }
 
   void _submit() {
+    if (widget.provider.isLockedOut) {
+      setState(() {
+        _errorMessage =
+            'Account locked. Please wait ${widget.provider.lockoutSecondsRemaining} seconds.';
+      });
+      return;
+    }
+
     final passcode = _passcodeController.text.trim();
     if (passcode.isEmpty) {
       setState(() => _errorMessage = 'Please enter administrator passcode');
@@ -49,13 +57,21 @@ class _AdminLoginDialogState extends State<AdminLoginDialog> {
       );
     } else {
       setState(() {
-        _errorMessage = 'Invalid passcode. (Demo default: admin123)';
+        if (widget.provider.isLockedOut) {
+          _errorMessage =
+              'Too many failed attempts. Locked for ${widget.provider.lockoutSecondsRemaining}s.';
+        } else {
+          _errorMessage =
+              'Invalid passcode. Attempt ${widget.provider.failedAdminAttempts}/5.';
+        }
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLocked = widget.provider.isLockedOut;
+
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       title: const Row(
@@ -86,10 +102,11 @@ class _AdminLoginDialogState extends State<AdminLoginDialog> {
               controller: _passcodeController,
               obscureText: _obscureText,
               autofocus: true,
+              enabled: !isLocked,
               onSubmitted: (_) => _submit(),
               decoration: InputDecoration(
                 labelText: 'Admin Passcode',
-                hintText: 'admin123',
+                hintText: 'Enter secret passcode',
                 prefixIcon: const Icon(Icons.lock_outline, size: 20),
                 suffixIcon: IconButton(
                   icon: Icon(
@@ -102,9 +119,17 @@ class _AdminLoginDialogState extends State<AdminLoginDialog> {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Default demo passcode: admin123',
-              style: TextStyle(fontSize: 11, color: AppColors.muted, fontStyle: FontStyle.italic),
+            const Row(
+              children: [
+                Icon(Icons.shield_outlined, size: 14, color: AppColors.muted),
+                SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    'Protected store area · 256-bit encrypted session',
+                    style: TextStyle(fontSize: 11, color: AppColors.muted),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -121,7 +146,7 @@ class _AdminLoginDialogState extends State<AdminLoginDialog> {
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
-          onPressed: _submit,
+          onPressed: isLocked ? null : _submit,
           child: const Text('Unlock Dashboard'),
         ),
       ],

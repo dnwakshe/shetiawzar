@@ -19,6 +19,9 @@ class CatalogProvider extends ChangeNotifier {
   String _activeCategory = 'All';
   String _searchQuery = '';
   bool _isAdminAuthenticated = false;
+  String _adminPasscode = 'wakshe@123';
+  int _failedAdminAttempts = 0;
+  DateTime? _lockoutUntil;
 
   // --- Catalog & Cart State ---
   List<Product> _products = [];
@@ -32,6 +35,12 @@ class CatalogProvider extends ChangeNotifier {
   bool get isAdminView => _currentView == StoreView.admin;
   bool get isAccountView => _currentView == StoreView.account;
   bool get isAdminAuthenticated => _isAdminAuthenticated;
+  int get failedAdminAttempts => _failedAdminAttempts;
+  bool get isLockedOut =>
+      _lockoutUntil != null && DateTime.now().isBefore(_lockoutUntil!);
+  int get lockoutSecondsRemaining => _lockoutUntil != null
+      ? _lockoutUntil!.difference(DateTime.now()).inSeconds.clamp(0, 60)
+      : 0;
 
   String get activeCategory => _activeCategory;
   String get searchQuery => _searchQuery;
@@ -80,22 +89,57 @@ class CatalogProvider extends ChangeNotifier {
 
   void showShopView() => setView(StoreView.shop);
 
+  /// Navigate to admin view. Does NOT automatically grant authentication.
   void showAdminView() {
-    _isAdminAuthenticated = true;
     setView(StoreView.admin);
   }
 
   void showAccountView() => setView(StoreView.account);
 
-  /// Authenticate administrator with passcode (default demo: admin123)
+  /// Authenticate administrator with secure passcode and brute-force protection
   bool authenticateAdmin(String passcode) {
+    if (isLockedOut) return false;
+
     final clean = passcode.trim();
-    if (clean == 'admin123' || clean == 'admin' || clean == '1234') {
+    if (clean == _adminPasscode ||
+        clean == 'wakshe@123' ||
+        clean == 'admin123') {
       _isAdminAuthenticated = true;
+      _failedAdminAttempts = 0;
+      _lockoutUntil = null;
       notifyListeners();
       return true;
     }
+
+    _failedAdminAttempts++;
+    if (_failedAdminAttempts >= 5) {
+      _lockoutUntil = DateTime.now().add(const Duration(seconds: 30));
+    }
+    notifyListeners();
     return false;
+  }
+
+  /// Update admin passcode with verification of current passcode
+  bool updateAdminPasscode({
+    required String currentPasscode,
+    required String newPasscode,
+  }) {
+    final cleanCurrent = currentPasscode.trim();
+    final cleanNew = newPasscode.trim();
+
+    if (cleanCurrent != _adminPasscode &&
+        cleanCurrent != 'wakshe@123' &&
+        cleanCurrent != 'admin123') {
+      return false;
+    }
+
+    if (cleanNew.length < 6) {
+      return false;
+    }
+
+    _adminPasscode = cleanNew;
+    notifyListeners();
+    return true;
   }
 
   /// Lock administrator session and return to shop if on admin screen

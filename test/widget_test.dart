@@ -69,9 +69,20 @@ void main() {
     // Cart counter in topbar should now show '1'
     expect(find.text('1'), findsOneWidget);
 
-    // 7. Test switching to Admin View
+    // 7. Test switching to Admin View with security verification
     await tester.tap(find.text('Admin'));
     await tester.pumpAndSettle();
+
+    // Web admin access is secured; authenticate with valid passcode
+    if (find.text('Administrator Access').evaluate().isNotEmpty) {
+      await tester.enterText(find.byType(TextField).last, 'wakshe@123');
+      await tester.tap(find.text('Unlock Dashboard'));
+      await tester.pumpAndSettle();
+    } else if (find.text('प्रशासक सुरक्षित प्रवेश').evaluate().isNotEmpty) {
+      await tester.enterText(find.byType(TextField).last, 'wakshe@123');
+      await tester.tap(find.text('Unlock Dashboard'));
+      await tester.pumpAndSettle();
+    }
 
     // Should display Admin dashboard
     expect(find.text('Admin dashboard'), findsOneWidget);

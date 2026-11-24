@@ -59,6 +59,10 @@ class _HomeShellState extends State<HomeShell> {
     CatalogProvider provider, {
     Product? productToEdit,
   }) {
+    if (!provider.isAdminAuthenticated) {
+      AdminLoginDialog.show(context, provider);
+      return;
+    }
     showDialog(
       context: context,
       builder: (ctx) =>
@@ -66,7 +70,15 @@ class _HomeShellState extends State<HomeShell> {
     );
   }
 
-  void _showNotificationConfigDialog(BuildContext context) {
+  void _showNotificationConfigDialog(
+    BuildContext context,
+    CatalogProvider provider,
+  ) {
+    if (!provider.isAdminAuthenticated) {
+      AdminLoginDialog.show(context, provider);
+      return;
+    }
+
     final tokenController = TextEditingController(
       text: EnquiryNotificationService.telegramBotToken.contains('YOUR_')
           ? ''
@@ -79,106 +91,129 @@ class _HomeShellState extends State<HomeShell> {
     );
     final emailController =
         TextEditingController(text: EnquiryNotificationService.adminEmail);
+    bool obscureTokens = true;
 
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
-          children: [
-            Icon(Icons.notifications_active, color: AppColors.green),
-            SizedBox(width: 8),
-            Text(
-              'Enquiry Alert Settings',
-              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
-            ),
-          ],
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+      builder: (ctx) => StatefulBuilder(
+        builder: (dialogCtx, setDialogState) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Row(
             children: [
-              const Text(
-                'Receive instant enquiry alerts on your Telegram and Email when a farmer places an order.',
-                style: TextStyle(fontSize: 12, color: AppColors.muted),
-              ),
-              const SizedBox(height: 14),
-              const Text(
-                'Admin Email (मोफत ईमेल सूचना):',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-              ),
-              const SizedBox(height: 4),
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  hintText: 'e.g. waksheagrotech@gmail.com',
-                  isDense: true,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Telegram Bot Token (Optional):',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-              ),
-              const SizedBox(height: 4),
-              TextField(
-                controller: tokenController,
-                decoration: InputDecoration(
-                  hintText: 'Token from @BotFather',
-                  isDense: true,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
-              const SizedBox(height: 12),
-              const Text(
-                'Telegram Chat ID (Optional):',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-              ),
-              const SizedBox(height: 4),
-              TextField(
-                controller: chatIdController,
-                decoration: InputDecoration(
-                  hintText: 'Chat ID from @userinfobot',
-                  isDense: true,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                ),
+              Icon(Icons.notifications_active, color: AppColors.green),
+              SizedBox(width: 8),
+              Text(
+                'Enquiry Alert Settings',
+                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.green,
-              foregroundColor: Colors.white,
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Receive instant enquiry alerts on your Telegram and Email when a farmer places an order.',
+                  style: TextStyle(fontSize: 12, color: AppColors.muted),
+                ),
+                const SizedBox(height: 14),
+                const Text(
+                  'Admin Email (मोफत ईमेल सूचना):',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+                const SizedBox(height: 4),
+                TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    hintText: 'e.g. waksheagrotech@gmail.com',
+                    isDense: true,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Telegram Bot Token (Optional):',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        obscureTokens ? Icons.visibility_off : Icons.visibility,
+                        size: 16,
+                        color: AppColors.muted,
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      tooltip: obscureTokens ? 'Show Token' : 'Mask Token',
+                      onPressed: () => setDialogState(
+                        () => obscureTokens = !obscureTokens,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                TextField(
+                  controller: tokenController,
+                  obscureText: obscureTokens,
+                  decoration: InputDecoration(
+                    hintText: 'Token from @BotFather',
+                    isDense: true,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Telegram Chat ID (Optional):',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+                const SizedBox(height: 4),
+                TextField(
+                  controller: chatIdController,
+                  obscureText: obscureTokens,
+                  decoration: InputDecoration(
+                    hintText: 'Chat ID from @userinfobot',
+                    isDense: true,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+              ],
             ),
-            onPressed: () {
-              if (emailController.text.trim().isNotEmpty) {
-                EnquiryNotificationService.adminEmail = emailController.text.trim();
-              }
-              if (tokenController.text.trim().isNotEmpty) {
-                EnquiryNotificationService.telegramBotToken =
-                    tokenController.text.trim();
-              }
-              if (chatIdController.text.trim().isNotEmpty) {
-                EnquiryNotificationService.telegramChatId =
-                    chatIdController.text.trim();
-              }
-              Navigator.pop(ctx);
-              setState(() {});
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Alert settings updated!')),
-              );
-            },
-            child: const Text('Save'),
           ),
-        ],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.green,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                if (emailController.text.trim().isNotEmpty) {
+                  EnquiryNotificationService.adminEmail = emailController.text.trim();
+                }
+                if (tokenController.text.trim().isNotEmpty) {
+                  EnquiryNotificationService.telegramBotToken =
+                      tokenController.text.trim();
+                }
+                if (chatIdController.text.trim().isNotEmpty) {
+                  EnquiryNotificationService.telegramChatId =
+                      chatIdController.text.trim();
+                }
+                Navigator.pop(ctx);
+                setState(() {});
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Alert settings updated!')),
+                );
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -269,7 +304,10 @@ class _HomeShellState extends State<HomeShell> {
                           _buildFeatureHighlights(isMobile),
                           _buildProductsSection(context, provider, isMobile),
                         ] else if (isAdmin) ...[
-                          _buildAdminView(context, provider, isMobile),
+                          if (provider.isAdminAuthenticated)
+                            _buildAdminView(context, provider, isMobile)
+                          else
+                            _buildAdminLoginChallenge(context, provider, isMobile),
                         ] else if (isAccount) ...[
                           _buildAccountView(context, provider, isMobile),
                         ],
@@ -532,11 +570,17 @@ class _HomeShellState extends State<HomeShell> {
               ),
               const SizedBox(width: 8),
 
-              // Admin Tab Button
+              // Admin Tab Button (Guarded on Desktop & Tablet)
               _TopNavButton(
                 title: 'Admin',
                 isActive: isAdmin,
-                onPressed: provider.showAdminView,
+                onPressed: () {
+                  if (provider.isAdminAuthenticated) {
+                    provider.showAdminView();
+                  } else {
+                    AdminLoginDialog.show(context, provider);
+                  }
+                },
               ),
               const SizedBox(width: 10),
 
@@ -1137,61 +1181,173 @@ class _HomeShellState extends State<HomeShell> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          // Header (Responsive Mobile vs Desktop)
+          if (isMobile) ...[
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Admin dashboard',
-                      style: TextStyle(
-                        fontSize: isMobile ? 20 : 24,
-                        fontWeight: FontWeight.w800,
-                        color: AppColors.ink,
+                    Expanded(
+                      child: Text(
+                        'Admin dashboard',
+                        style: TextStyle(
+                          fontSize: isMobile ? 18 : 24,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.ink,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 3),
-                    const Text(
-                      'Manage your catalogue and keep product information up to date.',
-                      style: TextStyle(fontSize: 13, color: AppColors.muted),
-                    ),
+                    if (provider.isAdminAuthenticated) ...[
+                      const SizedBox(width: 8),
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: AppColors.line),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 6,
+                          ),
+                        ),
+                        icon: const Icon(
+                          Icons.lock_outline,
+                          size: 15,
+                          color: AppColors.muted,
+                        ),
+                        label: const Text(
+                          'Lock',
+                          style: TextStyle(fontSize: 11.5, color: AppColors.muted),
+                        ),
+                        onPressed: () {
+                          provider.logoutAdmin();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Admin session locked.')),
+                          );
+                        },
+                      ),
+                    ],
                   ],
                 ),
-              ),
-              if (provider.isAdminAuthenticated)
-                OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: AppColors.line),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(9),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 8,
-                    ),
-                  ),
-                  icon: const Icon(
-                    Icons.lock_outline,
-                    size: 16,
-                    color: AppColors.muted,
-                  ),
-                  label: const Text(
-                    'Lock',
-                    style: TextStyle(fontSize: 12, color: AppColors.muted),
-                  ),
-                  onPressed: () {
-                    provider.logoutAdmin();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Admin session locked.')),
-                    );
-                  },
+                const SizedBox(height: 3),
+                const Text(
+                  'Manage your catalogue and keep product information up to date.',
+                  style: TextStyle(fontSize: 13, color: AppColors.muted),
                 ),
-            ],
-          ),
+                if (provider.isAdminAuthenticated) ...[
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: AppColors.line),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(9),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                    ),
+                    icon: const Icon(
+                      Icons.key_outlined,
+                      size: 14,
+                      color: AppColors.green,
+                    ),
+                    label: const Text(
+                      'Change Passcode',
+                      style: TextStyle(fontSize: 11.5, color: AppColors.ink),
+                    ),
+                    onPressed: () => _showChangePasscodeDialog(context, provider),
+                  ),
+                ],
+              ],
+            ),
+          ] else ...[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Admin dashboard',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.ink,
+                        ),
+                      ),
+                      const SizedBox(height: 3),
+                      const Text(
+                        'Manage your catalogue and keep product information up to date.',
+                        style: TextStyle(fontSize: 13, color: AppColors.muted),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                if (provider.isAdminAuthenticated)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: AppColors.line),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
+                        ),
+                        icon: const Icon(
+                          Icons.key_outlined,
+                          size: 15,
+                          color: AppColors.green,
+                        ),
+                        label: const Text(
+                          'Change Passcode',
+                          style: TextStyle(fontSize: 12, color: AppColors.ink),
+                        ),
+                        onPressed: () => _showChangePasscodeDialog(context, provider),
+                      ),
+                      const SizedBox(width: 8),
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: AppColors.line),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(9),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
+                        ),
+                        icon: const Icon(
+                          Icons.lock_outline,
+                          size: 16,
+                          color: AppColors.muted,
+                        ),
+                        label: const Text(
+                          'Lock Session',
+                          style: TextStyle(fontSize: 12, color: AppColors.muted),
+                        ),
+                        onPressed: () {
+                          provider.logoutAdmin();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Admin session locked.')),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ],
           const SizedBox(height: 20),
 
           // Instant Enquiry Notifications Status Card
@@ -1228,7 +1384,7 @@ class _HomeShellState extends State<HomeShell> {
                       icon: const Icon(Icons.settings_outlined, size: 18, color: AppColors.green),
                       tooltip: 'Configure Alerts',
                       visualDensity: VisualDensity.compact,
-                      onPressed: () => _showNotificationConfigDialog(context),
+                      onPressed: () => _showNotificationConfigDialog(context, provider),
                     ),
                   ],
                 ),
@@ -2306,6 +2462,11 @@ class _HomeShellState extends State<HomeShell> {
     String id,
     String name,
   ) {
+    if (!provider.isAdminAuthenticated) {
+      AdminLoginDialog.show(context, provider);
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -2331,6 +2492,172 @@ class _HomeShellState extends State<HomeShell> {
             child: const Text('Delete'),
           ),
         ],
+      ),
+    );
+  }
+
+  /// Dialog to update administrator passcode
+  void _showChangePasscodeDialog(
+    BuildContext context,
+    CatalogProvider provider,
+  ) {
+    if (!provider.isAdminAuthenticated) return;
+
+    final currentController = TextEditingController();
+    final newController = TextEditingController();
+    final confirmController = TextEditingController();
+    String? errorText;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (dialogCtx, setDialogState) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Row(
+            children: [
+              Icon(Icons.password, color: AppColors.green),
+              SizedBox(width: 8),
+              Text(
+                'Change Admin Passcode',
+                style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Set a new secret passcode to secure web administration access.',
+                  style: TextStyle(fontSize: 12, color: AppColors.muted),
+                ),
+                const SizedBox(height: 14),
+                TextField(
+                  controller: currentController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Current Passcode',
+                    prefixIcon: Icon(Icons.lock_outline, size: 18),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: newController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'New Passcode (min 6 characters)',
+                    prefixIcon: Icon(Icons.key, size: 18),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: confirmController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Confirm New Passcode',
+                    prefixIcon: Icon(Icons.check_circle_outline, size: 18),
+                  ),
+                ),
+                if (errorText != null) ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    errorText!,
+                    style: const TextStyle(
+                      color: AppColors.outOfStockText,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.green,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              onPressed: () {
+                final current = currentController.text.trim();
+                final newPass = newController.text.trim();
+                final confirm = confirmController.text.trim();
+
+                if (newPass.length < 6) {
+                  setDialogState(() {
+                    errorText = 'New passcode must be at least 6 characters.';
+                  });
+                  return;
+                }
+                if (newPass != confirm) {
+                  setDialogState(() {
+                    errorText = 'New passcodes do not match.';
+                  });
+                  return;
+                }
+
+                final success = provider.updateAdminPasscode(
+                  currentPasscode: current,
+                  newPasscode: newPass,
+                );
+
+                if (success) {
+                  Navigator.of(ctx).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      backgroundColor: AppColors.green,
+                      content: Text('Admin passcode updated successfully.'),
+                    ),
+                  );
+                } else {
+                  setDialogState(() {
+                    errorText = 'Current passcode is incorrect.';
+                  });
+                }
+              },
+              child: const Text('Update Passcode'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// In-page security challenge card rendered when Admin view is requested without auth
+  Widget _buildAdminLoginChallenge(
+    BuildContext context,
+    CatalogProvider provider,
+    bool isMobile,
+  ) {
+    return Center(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 440),
+        margin: EdgeInsets.symmetric(
+          horizontal: isMobile ? 16 : 24,
+          vertical: 40,
+        ),
+        padding: EdgeInsets.all(isMobile ? 22 : 30),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: AppColors.line),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF173F2A).withValues(alpha: 0.08),
+              blurRadius: 30,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: _AdminChallengeWidget(provider: provider),
       ),
     );
   }
@@ -3213,6 +3540,152 @@ class _ProductEditDialogState extends State<_ProductEditDialog> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// In-page challenge form when user visits Admin tab without authentication
+class _AdminChallengeWidget extends StatefulWidget {
+  final CatalogProvider provider;
+
+  const _AdminChallengeWidget({required this.provider});
+
+  @override
+  State<_AdminChallengeWidget> createState() => _AdminChallengeWidgetState();
+}
+
+class _AdminChallengeWidgetState extends State<_AdminChallengeWidget> {
+  final TextEditingController _controller = TextEditingController();
+  bool _obscure = true;
+  String? _errorMessage;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _unlock() {
+    if (widget.provider.isLockedOut) {
+      setState(() {
+        _errorMessage =
+            'Account locked. Please wait ${widget.provider.lockoutSecondsRemaining}s.';
+      });
+      return;
+    }
+
+    final code = _controller.text.trim();
+    if (code.isEmpty) {
+      setState(() => _errorMessage = 'Please enter passcode.');
+      return;
+    }
+
+    final success = widget.provider.authenticateAdmin(code);
+    if (!success) {
+      setState(() {
+        if (widget.provider.isLockedOut) {
+          _errorMessage =
+              'Too many failed attempts. Locked for ${widget.provider.lockoutSecondsRemaining}s.';
+        } else {
+          _errorMessage =
+              'Incorrect passcode. Attempt ${widget.provider.failedAdminAttempts}/5.';
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isLocked = widget.provider.isLockedOut;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Center(
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.featureBg,
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.line),
+            ),
+            child: const Icon(
+              Icons.lock_person_outlined,
+              size: 40,
+              color: AppColors.green,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          'प्रशासक सुरक्षित प्रवेश',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+            color: AppColors.ink,
+          ),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          'Web Administrator Access Protected',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 13,
+            color: AppColors.muted,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'This dashboard allows managing products, stock, and alerts. Enter your admin passcode to proceed.',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 12, color: AppColors.muted, height: 1.3),
+        ),
+        const SizedBox(height: 22),
+        TextField(
+          controller: _controller,
+          obscureText: _obscure,
+          autofocus: true,
+          enabled: !isLocked,
+          onSubmitted: (_) => _unlock(),
+          decoration: InputDecoration(
+            labelText: 'Admin Passcode',
+            hintText: 'Enter secret passcode',
+            prefixIcon: const Icon(Icons.shield_outlined, size: 20),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _obscure ? Icons.visibility_off : Icons.visibility,
+                size: 20,
+              ),
+              onPressed: () => setState(() => _obscure = !_obscure),
+            ),
+            errorText: _errorMessage,
+          ),
+        ),
+        const SizedBox(height: 18),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.green,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          onPressed: isLocked ? null : _unlock,
+          child: const Text(
+            'Unlock Dashboard',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        const SizedBox(height: 10),
+        TextButton(
+          onPressed: () => widget.provider.showShopView(),
+          child: const Text('← Return to Shop (दुकान पानावर परत जा)'),
+        ),
+      ],
     );
   }
 }
