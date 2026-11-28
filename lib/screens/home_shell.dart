@@ -89,15 +89,18 @@ class _HomeShellState extends State<HomeShell> {
           ? ''
           : EnquiryNotificationService.telegramChatId,
     );
-    final emailController =
-        TextEditingController(text: EnquiryNotificationService.adminEmail);
+    final emailController = TextEditingController(
+      text: EnquiryNotificationService.adminEmail,
+    );
     bool obscureTokens = true;
 
     showDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (dialogCtx, setDialogState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: const Row(
             children: [
               Icon(Icons.notifications_active, color: AppColors.green),
@@ -128,7 +131,9 @@ class _HomeShellState extends State<HomeShell> {
                   decoration: InputDecoration(
                     hintText: 'e.g. waksheagrotech@gmail.com',
                     isDense: true,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -137,7 +142,10 @@ class _HomeShellState extends State<HomeShell> {
                   children: [
                     const Text(
                       'Telegram Bot Token (Optional):',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
                     ),
                     IconButton(
                       icon: Icon(
@@ -148,9 +156,8 @@ class _HomeShellState extends State<HomeShell> {
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                       tooltip: obscureTokens ? 'Show Token' : 'Mask Token',
-                      onPressed: () => setDialogState(
-                        () => obscureTokens = !obscureTokens,
-                      ),
+                      onPressed: () =>
+                          setDialogState(() => obscureTokens = !obscureTokens),
                     ),
                   ],
                 ),
@@ -161,7 +168,9 @@ class _HomeShellState extends State<HomeShell> {
                   decoration: InputDecoration(
                     hintText: 'Token from @BotFather',
                     isDense: true,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -176,7 +185,9 @@ class _HomeShellState extends State<HomeShell> {
                   decoration: InputDecoration(
                     hintText: 'Chat ID from @userinfobot',
                     isDense: true,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 ),
               ],
@@ -194,15 +205,18 @@ class _HomeShellState extends State<HomeShell> {
               ),
               onPressed: () {
                 if (emailController.text.trim().isNotEmpty) {
-                  EnquiryNotificationService.adminEmail = emailController.text.trim();
+                  EnquiryNotificationService.adminEmail = emailController.text
+                      .trim();
                 }
                 if (tokenController.text.trim().isNotEmpty) {
-                  EnquiryNotificationService.telegramBotToken =
-                      tokenController.text.trim();
+                  EnquiryNotificationService.telegramBotToken = tokenController
+                      .text
+                      .trim();
                 }
                 if (chatIdController.text.trim().isNotEmpty) {
-                  EnquiryNotificationService.telegramChatId =
-                      chatIdController.text.trim();
+                  EnquiryNotificationService.telegramChatId = chatIdController
+                      .text
+                      .trim();
                 }
                 Navigator.pop(ctx);
                 setState(() {});
@@ -307,7 +321,11 @@ class _HomeShellState extends State<HomeShell> {
                           if (provider.isAdminAuthenticated)
                             _buildAdminView(context, provider, isMobile)
                           else
-                            _buildAdminLoginChallenge(context, provider, isMobile),
+                            _buildAdminLoginChallenge(
+                              context,
+                              provider,
+                              isMobile,
+                            ),
                         ] else if (isAccount) ...[
                           _buildAccountView(context, provider, isMobile),
                         ],
@@ -371,14 +389,18 @@ class _HomeShellState extends State<HomeShell> {
                         child: Image.asset(
                           'assets/app_logo.png',
                           fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) => Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.lime,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            alignment: Alignment.center,
-                            child: const Text('🌾', style: TextStyle(fontSize: 18)),
-                          ),
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.lime,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                alignment: Alignment.center,
+                                child: const Text(
+                                  '🌾',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              ),
                         ),
                       ),
                     ),
@@ -477,7 +499,10 @@ class _HomeShellState extends State<HomeShell> {
                   icon: const Icon(Icons.menu, color: Colors.white, size: 22),
                   tooltip: 'Open navigation menu',
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                  constraints: const BoxConstraints(
+                    minWidth: 36,
+                    minHeight: 36,
+                  ),
                   onPressed: () => _scaffoldKey.currentState?.openDrawer(),
                 ),
               ],
@@ -761,7 +786,10 @@ class _HomeShellState extends State<HomeShell> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('✦ ', style: TextStyle(color: AppColors.gold, fontSize: 10)),
+              const Text(
+                '✦ ',
+                style: TextStyle(color: AppColors.gold, fontSize: 10),
+              ),
               Flexible(
                 child: Text(
                   '${LauncherHelper.proprietor} — ${LauncherHelper.businessRole}',
@@ -832,6 +860,7 @@ class _HomeShellState extends State<HomeShell> {
         Wrap(
           spacing: 10,
           runSpacing: 10,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -853,27 +882,83 @@ class _HomeShellState extends State<HomeShell> {
               ),
             ),
             OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.white,
-                side: BorderSide(color: Colors.white.withValues(alpha: 0.6)),
-                padding: EdgeInsets.symmetric(
-                  horizontal: isMobile ? 14 : 18,
-                  vertical: isMobile ? 12 : 14,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(11),
-                ),
+              style: _heroOutlinedButtonStyle(isMobile),
+              icon: const Icon(
+                Icons.phone_in_talk,
+                size: 16,
+                color: AppColors.gold,
               ),
-              icon: const Icon(Icons.phone_in_talk, size: 16, color: AppColors.gold),
               label: Text(
                 'Call: ${LauncherHelper.phoneDisplay}',
-                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 12.5,
+                ),
               ),
               onPressed: () => LauncherHelper.callSupport(),
             ),
+            OutlinedButton.icon(
+              style: _heroOutlinedButtonStyle(isMobile),
+              icon: const Icon(
+                Icons.email_outlined,
+                size: 16,
+                color: AppColors.lime,
+              ),
+              label: const Text(
+                LauncherHelper.email,
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5),
+              ),
+              onPressed: () => LauncherHelper.openEmail(),
+            ),
+            OutlinedButton.icon(
+              style: _heroOutlinedButtonStyle(isMobile),
+              icon: const Icon(
+                Icons.map_outlined,
+                size: 16,
+                color: AppColors.lime,
+              ),
+              label: const Text(
+                'Map & Location ↗',
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5),
+              ),
+              onPressed: () => LauncherHelper.openMap(),
+            ),
+            // OutlinedButton(
+            //   style: _heroOutlinedButtonStyle(isMobile),
+            //   onPressed: () => LauncherHelper.openMap(),
+            //   child: Row(
+            //     mainAxisSize: MainAxisSize.min,
+            //     children: [
+            //       const Icon(Icons.location_on, size: 16, color: AppColors.gold),
+            //       const SizedBox(width: 6),
+            //       Flexible(
+            //         child: Text(
+            //           LauncherHelper.fullAddress,
+            //           style: TextStyle(
+            //             fontWeight: FontWeight.w600,
+            //             fontSize: isMobile ? 11.5 : 12,
+            //             height: 1.25,
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ],
+    );
+  }
+
+  ButtonStyle _heroOutlinedButtonStyle(bool isMobile) {
+    return OutlinedButton.styleFrom(
+      foregroundColor: Colors.white,
+      side: BorderSide(color: Colors.white.withValues(alpha: 0.6)),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 12 : 16,
+        vertical: isMobile ? 11 : 13,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
     );
   }
 
@@ -1219,12 +1304,17 @@ class _HomeShellState extends State<HomeShell> {
                         ),
                         label: const Text(
                           'Lock',
-                          style: TextStyle(fontSize: 11.5, color: AppColors.muted),
+                          style: TextStyle(
+                            fontSize: 11.5,
+                            color: AppColors.muted,
+                          ),
                         ),
                         onPressed: () {
                           provider.logoutAdmin();
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Admin session locked.')),
+                            const SnackBar(
+                              content: Text('Admin session locked.'),
+                            ),
                           );
                         },
                       ),
@@ -1258,7 +1348,8 @@ class _HomeShellState extends State<HomeShell> {
                       'Change Passcode',
                       style: TextStyle(fontSize: 11.5, color: AppColors.ink),
                     ),
-                    onPressed: () => _showChangePasscodeDialog(context, provider),
+                    onPressed: () =>
+                        _showChangePasscodeDialog(context, provider),
                   ),
                 ],
               ],
@@ -1313,7 +1404,8 @@ class _HomeShellState extends State<HomeShell> {
                           'Change Passcode',
                           style: TextStyle(fontSize: 12, color: AppColors.ink),
                         ),
-                        onPressed: () => _showChangePasscodeDialog(context, provider),
+                        onPressed: () =>
+                            _showChangePasscodeDialog(context, provider),
                       ),
                       const SizedBox(width: 8),
                       OutlinedButton.icon(
@@ -1334,12 +1426,17 @@ class _HomeShellState extends State<HomeShell> {
                         ),
                         label: const Text(
                           'Lock Session',
-                          style: TextStyle(fontSize: 12, color: AppColors.muted),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.muted,
+                          ),
                         ),
                         onPressed: () {
                           provider.logoutAdmin();
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Admin session locked.')),
+                            const SnackBar(
+                              content: Text('Admin session locked.'),
+                            ),
                           );
                         },
                       ),
@@ -1368,12 +1465,19 @@ class _HomeShellState extends State<HomeShell> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.notifications_active_outlined, color: AppColors.green, size: 20),
+                          Icon(
+                            Icons.notifications_active_outlined,
+                            color: AppColors.green,
+                            size: 20,
+                          ),
                           SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               'Telegram & Email Enquiry Alerts',
-                              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 14,
+                              ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -1381,10 +1485,15 @@ class _HomeShellState extends State<HomeShell> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.settings_outlined, size: 18, color: AppColors.green),
+                      icon: const Icon(
+                        Icons.settings_outlined,
+                        size: 18,
+                        color: AppColors.green,
+                      ),
                       tooltip: 'Configure Alerts',
                       visualDensity: VisualDensity.compact,
-                      onPressed: () => _showNotificationConfigDialog(context, provider),
+                      onPressed: () =>
+                          _showNotificationConfigDialog(context, provider),
                     ),
                   ],
                 ),
@@ -1399,8 +1508,13 @@ class _HomeShellState extends State<HomeShell> {
                   runSpacing: 8,
                   children: [
                     Container(
-                      constraints: BoxConstraints(maxWidth: isMobile ? 260 : 360),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      constraints: BoxConstraints(
+                        maxWidth: isMobile ? 260 : 360,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
@@ -1409,12 +1523,19 @@ class _HomeShellState extends State<HomeShell> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.send, size: 13, color: Color(0xFF0088CC)),
+                          const Icon(
+                            Icons.send,
+                            size: 13,
+                            color: Color(0xFF0088CC),
+                          ),
                           const SizedBox(width: 6),
                           Flexible(
                             child: Text(
                               'Telegram: ${EnquiryNotificationService.telegramBotToken.contains('YOUR_') ? 'Setup needed' : 'Active'}',
-                              style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600),
+                              style: const TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w600,
+                              ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -1422,8 +1543,13 @@ class _HomeShellState extends State<HomeShell> {
                       ),
                     ),
                     Container(
-                      constraints: BoxConstraints(maxWidth: isMobile ? 260 : 360),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      constraints: BoxConstraints(
+                        maxWidth: isMobile ? 260 : 360,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
@@ -1432,12 +1558,19 @@ class _HomeShellState extends State<HomeShell> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.email_outlined, size: 14, color: AppColors.green),
+                          const Icon(
+                            Icons.email_outlined,
+                            size: 14,
+                            color: AppColors.green,
+                          ),
                           const SizedBox(width: 6),
                           Flexible(
                             child: Text(
                               'Email: ${EnquiryNotificationService.adminEmail}',
-                              style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600),
+                              style: const TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w600,
+                              ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -1513,7 +1646,10 @@ class _HomeShellState extends State<HomeShell> {
                         ),
                         onPressed: () => _showProductDialog(context, provider),
                         icon: const Icon(Icons.add, size: 15),
-                        label: const Text('Add product', style: TextStyle(fontSize: 12)),
+                        label: const Text(
+                          'Add product',
+                          style: TextStyle(fontSize: 12),
+                        ),
                       ),
                     ],
                   ),
@@ -1843,11 +1979,8 @@ class _HomeShellState extends State<HomeShell> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () => _showProductDialog(
-                  context,
-                  provider,
-                  productToEdit: p,
-                ),
+                onPressed: () =>
+                    _showProductDialog(context, provider, productToEdit: p),
                 icon: const Icon(Icons.edit, size: 14, color: AppColors.green),
                 label: const Text(
                   'Edit',
@@ -1870,12 +2003,8 @@ class _HomeShellState extends State<HomeShell> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () => _confirmDelete(
-                  context,
-                  provider,
-                  p.id,
-                  p.name,
-                ),
+                onPressed: () =>
+                    _confirmDelete(context, provider, p.id, p.name),
                 icon: const Icon(
                   Icons.delete_outline,
                   size: 14,
@@ -2091,7 +2220,9 @@ class _HomeShellState extends State<HomeShell> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        provider.isAdminAuthenticated ? 'Unlocked' : 'Protected',
+                        provider.isAdminAuthenticated
+                            ? 'Unlocked'
+                            : 'Protected',
                         style: TextStyle(
                           fontSize: 10.5,
                           fontWeight: FontWeight.bold,
@@ -2233,16 +2364,26 @@ class _HomeShellState extends State<HomeShell> {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.history_rounded, color: AppColors.green, size: 20),
+                      const Icon(
+                        Icons.history_rounded,
+                        color: AppColors.green,
+                        size: 20,
+                      ),
                       const SizedBox(width: 8),
                       const Expanded(
                         child: Text(
                           'मागील चौकशी नोंदी (Placed Enquiries)',
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.inStockBg,
                           borderRadius: BorderRadius.circular(12),
@@ -2284,7 +2425,10 @@ class _HomeShellState extends State<HomeShell> {
                               ),
                               Text(
                                 enq.formattedDate,
-                                style: const TextStyle(fontSize: 10.5, color: AppColors.muted),
+                                style: const TextStyle(
+                                  fontSize: 10.5,
+                                  color: AppColors.muted,
+                                ),
                               ),
                             ],
                           ),
@@ -2300,7 +2444,10 @@ class _HomeShellState extends State<HomeShell> {
                           const SizedBox(height: 4),
                           Text(
                             '🌾 ${enq.itemsSummary}',
-                            style: const TextStyle(fontSize: 12, color: AppColors.ink),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.ink,
+                            ),
                           ),
                         ],
                       ),
@@ -2343,7 +2490,11 @@ class _HomeShellState extends State<HomeShell> {
                 const SizedBox(height: 3),
                 const Text(
                   '${LauncherHelper.businessRole} · शिवकालीन परंपरा व राजस्थानी लोहार कारागिरी',
-                  style: TextStyle(fontSize: 12, color: AppColors.muted, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.muted,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Container(
@@ -2382,12 +2533,20 @@ class _HomeShellState extends State<HomeShell> {
                 // Phone
                 Row(
                   children: [
-                    const Icon(Icons.phone_in_talk, size: 18, color: AppColors.green),
+                    const Icon(
+                      Icons.phone_in_talk,
+                      size: 18,
+                      color: AppColors.green,
+                    ),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'मोबाईल / फोन: ${LauncherHelper.phoneDisplay}',
-                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.ink),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.ink,
+                        ),
                       ),
                     ),
                   ],
@@ -2397,12 +2556,20 @@ class _HomeShellState extends State<HomeShell> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.location_on, size: 18, color: AppColors.green),
+                    const Icon(
+                      Icons.location_on,
+                      size: 18,
+                      color: AppColors.green,
+                    ),
                     const SizedBox(width: 8),
                     const Expanded(
                       child: Text(
                         LauncherHelper.fullAddress,
-                        style: TextStyle(fontSize: 12, color: AppColors.muted, height: 1.3),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.muted,
+                          height: 1.3,
+                        ),
                       ),
                     ),
                   ],
@@ -2417,8 +2584,13 @@ class _HomeShellState extends State<HomeShell> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.green,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                       icon: const Icon(Icons.phone, size: 16),
                       label: const Text('Call Support'),
@@ -2428,8 +2600,13 @@ class _HomeShellState extends State<HomeShell> {
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.green,
                         side: const BorderSide(color: AppColors.green2),
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                       icon: const Icon(Icons.chat_outlined, size: 16),
                       label: const Text('WhatsApp'),
@@ -2439,10 +2616,19 @@ class _HomeShellState extends State<HomeShell> {
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppColors.ink,
                         side: const BorderSide(color: AppColors.line),
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                      icon: const Icon(Icons.map_outlined, size: 16, color: AppColors.gold),
+                      icon: const Icon(
+                        Icons.map_outlined,
+                        size: 16,
+                        color: AppColors.gold,
+                      ),
                       label: const Text('Google Maps'),
                       onPressed: () => LauncherHelper.openMap(),
                     ),
@@ -2512,7 +2698,9 @@ class _HomeShellState extends State<HomeShell> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (dialogCtx, setDialogState) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: const Row(
             children: [
               Icon(Icons.password, color: AppColors.green),
@@ -2688,12 +2876,20 @@ class _HomeShellState extends State<HomeShell> {
                 const SizedBox(height: 4),
                 const Text(
                   '${LauncherHelper.proprietor} — ${LauncherHelper.businessRole}',
-                  style: TextStyle(color: AppColors.gold, fontSize: 11.5, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    color: AppColors.gold,
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 const Text(
                   LauncherHelper.fullAddress,
-                  style: TextStyle(color: Color(0xFFD8E4D8), fontSize: 11, height: 1.3),
+                  style: TextStyle(
+                    color: Color(0xFFD8E4D8),
+                    fontSize: 11,
+                    height: 1.3,
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Wrap(
@@ -2709,7 +2905,11 @@ class _HomeShellState extends State<HomeShell> {
                           SizedBox(width: 4),
                           Text(
                             LauncherHelper.phoneDisplay,
-                            style: TextStyle(color: Colors.white, fontSize: 11.5, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
@@ -2719,11 +2919,18 @@ class _HomeShellState extends State<HomeShell> {
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.email_outlined, size: 13, color: AppColors.lime),
+                          Icon(
+                            Icons.email_outlined,
+                            size: 13,
+                            color: AppColors.lime,
+                          ),
                           SizedBox(width: 4),
                           Text(
                             LauncherHelper.email,
-                            style: TextStyle(color: AppColors.lime, fontSize: 11.5),
+                            style: TextStyle(
+                              color: AppColors.lime,
+                              fontSize: 11.5,
+                            ),
                           ),
                         ],
                       ),
@@ -2737,7 +2944,10 @@ class _HomeShellState extends State<HomeShell> {
                           SizedBox(width: 4),
                           Text(
                             'Google Maps ↗',
-                            style: TextStyle(color: AppColors.lime, fontSize: 11.5),
+                            style: TextStyle(
+                              color: AppColors.lime,
+                              fontSize: 11.5,
+                            ),
                           ),
                         ],
                       ),
@@ -2770,17 +2980,28 @@ class _HomeShellState extends State<HomeShell> {
                       const SizedBox(height: 3),
                       const Text(
                         '${LauncherHelper.proprietor} — ${LauncherHelper.businessRole}',
-                        style: TextStyle(color: AppColors.gold, fontSize: 12, fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                          color: AppColors.gold,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                       const SizedBox(height: 4),
                       const Text(
                         LauncherHelper.fullAddress,
-                        style: TextStyle(color: Color(0xFFD8E4D8), fontSize: 11.5),
+                        style: TextStyle(
+                          color: Color(0xFFD8E4D8),
+                          fontSize: 11.5,
+                        ),
                       ),
                       const SizedBox(height: 6),
                       const Text(
                         '${LauncherHelper.qualityQuote} • ${LauncherHelper.trustTagline}',
-                        style: TextStyle(color: Color(0xFF9FB2A2), fontSize: 11, fontStyle: FontStyle.italic),
+                        style: TextStyle(
+                          color: Color(0xFF9FB2A2),
+                          fontSize: 11,
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
                     ],
                   ),
@@ -2794,11 +3015,19 @@ class _HomeShellState extends State<HomeShell> {
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.phone_in_talk, size: 16, color: AppColors.gold),
+                          Icon(
+                            Icons.phone_in_talk,
+                            size: 16,
+                            color: AppColors.gold,
+                          ),
                           SizedBox(width: 6),
                           Text(
                             LauncherHelper.phoneDisplay,
-                            style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
@@ -2809,11 +3038,18 @@ class _HomeShellState extends State<HomeShell> {
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.email_outlined, size: 14, color: AppColors.lime),
+                          Icon(
+                            Icons.email_outlined,
+                            size: 14,
+                            color: AppColors.lime,
+                          ),
                           SizedBox(width: 5),
                           Text(
                             LauncherHelper.email,
-                            style: TextStyle(color: AppColors.lime, fontSize: 12),
+                            style: TextStyle(
+                              color: AppColors.lime,
+                              fontSize: 12,
+                            ),
                           ),
                         ],
                       ),
@@ -2824,11 +3060,18 @@ class _HomeShellState extends State<HomeShell> {
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.location_on, size: 15, color: AppColors.lime),
+                          Icon(
+                            Icons.location_on,
+                            size: 15,
+                            color: AppColors.lime,
+                          ),
                           SizedBox(width: 4),
                           Text(
                             'Open Factory in Google Maps ↗',
-                            style: TextStyle(color: AppColors.lime, fontSize: 12),
+                            style: TextStyle(
+                              color: AppColors.lime,
+                              fontSize: 12,
+                            ),
                           ),
                         ],
                       ),
@@ -2976,7 +3219,10 @@ class _ProductCard extends StatelessWidget {
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                 gradient: LinearGradient(
-                  colors: [AppColors.artGradientStart, AppColors.artGradientEnd],
+                  colors: [
+                    AppColors.artGradientStart,
+                    AppColors.artGradientEnd,
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),

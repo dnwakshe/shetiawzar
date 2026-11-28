@@ -12,7 +12,7 @@ class LauncherHelper {
 
   // Support & Contact
   static const String phone = '+918788341895';
-  static const String phoneDisplay = '87 88 34 18 95';
+  static const String phoneDisplay = '+918788341895';
   static const String whatsappNumber = '918788341895';
   static const String email = 'waksheagrotech@gmail.com';
 
@@ -37,56 +37,52 @@ class LauncherHelper {
   /// Flag to enable/disable external OS intents (useful in automated test environments)
   static bool enableLauncher = true;
 
-  /// Launch direct phone dialer for customer support.
-  static Future<bool> callSupport() async {
+  /// Optional test hook invoked with the target [Uri] before launching.
+  static void Function(Uri uri)? onLaunchAttempt;
+
+  static Future<bool> _launch(
+    Uri uri, {
+    LaunchMode mode = LaunchMode.platformDefault,
+  }) async {
+    onLaunchAttempt?.call(uri);
     if (!enableLauncher) return true;
     try {
-      final uri = Uri.parse('tel:$phone');
       if (await canLaunchUrl(uri)) {
-        return await launchUrl(uri);
+        return await launchUrl(uri, mode: mode);
       }
+      return await launchUrl(uri, mode: mode);
     } catch (_) {}
     return false;
+  }
+
+  /// Launch direct phone dialer for customer support.
+  static Future<bool> callSupport() async {
+    return _launch(Uri.parse('tel:$phone'));
   }
 
   /// Launch email client for customer support.
   static Future<bool> openEmail([String? subject, String? body]) async {
-    if (!enableLauncher) return true;
-    try {
-      final sub = Uri.encodeComponent(subject ?? 'Wakshe Agrotech Inquiry / चौकशी');
-      final b = Uri.encodeComponent(body ?? '');
-      final uri = Uri.parse('mailto:$email?subject=$sub&body=$b');
-      if (await canLaunchUrl(uri)) {
-        return await launchUrl(uri);
-      }
-    } catch (_) {}
-    return false;
+    final sub = Uri.encodeComponent(subject ?? 'Wakshe Agrotech Inquiry / चौकशी');
+    final b = Uri.encodeComponent(body ?? '');
+    return _launch(Uri.parse('mailto:$email?subject=$sub&body=$b'));
   }
 
   /// Launch WhatsApp chat with pre-filled message.
   static Future<bool> openWhatsApp([String? message]) async {
-    if (!enableLauncher) return true;
-    try {
-      final defaultMsg =
-          'नमस्कार, मला वाक्षे ॲग्रोटेक (प्रो. माया वाक्षे) शेती अवजारांबद्दल माहिती हवी आहे.';
-      final text = Uri.encodeComponent(message ?? defaultMsg);
-      final uri = Uri.parse('https://wa.me/$whatsappNumber?text=$text');
-      if (await canLaunchUrl(uri)) {
-        return await launchUrl(uri, mode: LaunchMode.externalApplication);
-      }
-    } catch (_) {}
-    return false;
+    final defaultMsg =
+        'नमस्कार, मला वाक्षे ॲग्रोटेक (प्रो. माया वाक्षे) शेती अवजारांबद्दल माहिती हवी आहे.';
+    final text = Uri.encodeComponent(message ?? defaultMsg);
+    return _launch(
+      Uri.parse('https://wa.me/$whatsappNumber?text=$text'),
+      mode: LaunchMode.externalApplication,
+    );
   }
 
   /// Open Google Maps location in external browser or Maps application.
   static Future<bool> openMap() async {
-    if (!enableLauncher) return true;
-    try {
-      final uri = Uri.parse(mapsUrl);
-      if (await canLaunchUrl(uri)) {
-        return await launchUrl(uri, mode: LaunchMode.externalApplication);
-      }
-    } catch (_) {}
-    return false;
+    return _launch(
+      Uri.parse(mapsUrl),
+      mode: LaunchMode.externalApplication,
+    );
   }
 }

@@ -222,7 +222,7 @@ class _EnquiryDialogState extends State<EnquiryDialog> {
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'वाक्षे ॲग्रोटेक टीम (87 88 34 18 95) तुमच्या दिलेल्या नंबरवर संपर्क करेल.',
+                    'वाक्षे ॲग्रोटेक टीम (${LauncherHelper.phoneDisplay}) तुमच्या दिलेल्या नंबरवर संपर्क करेल.',
                     style: TextStyle(
                       fontSize: 11.5,
                       color: AppColors.muted,
