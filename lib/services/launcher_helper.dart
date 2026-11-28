@@ -5,8 +5,8 @@ import 'package:url_launcher/url_launcher.dart';
 /// physical address, and Google Maps integration.
 class LauncherHelper {
   // Owner & Business details
-  static const String proprietor = 'प्रो. प्रा. सौ. माया मोहन वाक्षे';
-  static const String proprietorEn = 'Prof. Mrs. Maya Mohan Wakshe';
+  static const String proprietor = 'प्रो. प्रा. एम एम वाक्षे';
+  static const String proprietorEn = 'Prop. Prof. M. M. Wakshe';
   static const String businessRole = 'शेती अवजार व्यापारी';
   static const String businessRoleEn = 'Agricultural Tool Merchant & Blacksmith Craft';
 
@@ -70,7 +70,7 @@ class LauncherHelper {
   /// Launch WhatsApp chat with pre-filled message.
   static Future<bool> openWhatsApp([String? message]) async {
     final defaultMsg =
-        'नमस्कार, मला वाक्षे ॲग्रोटेक (प्रो. माया वाक्षे) शेती अवजारांबद्दल माहिती हवी आहे.';
+        'नमस्कार, मला वाक्षे ॲग्रोटेक ($proprietor) शेती अवजारांबद्दल माहिती हवी आहे.';
     final text = Uri.encodeComponent(message ?? defaultMsg);
     return _launch(
       Uri.parse('https://wa.me/$whatsappNumber?text=$text'),

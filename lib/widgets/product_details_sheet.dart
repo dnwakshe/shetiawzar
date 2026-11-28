@@ -263,7 +263,7 @@ class ProductDetailsSheet extends StatelessWidget {
                         const SizedBox(width: 8),
                         const Expanded(
                           child: Text(
-                            'संपर्क: ${LauncherHelper.phoneDisplay} (प्रो. माया वाक्षे)',
+                            'संपर्क: ${LauncherHelper.phoneDisplay} (${LauncherHelper.proprietor})',
                             style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: AppColors.ink),
                             overflow: TextOverflow.ellipsis,
                           ),

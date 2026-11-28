@@ -89,4 +89,42 @@ void main() {
     expect(find.text('Product catalogue'), findsOneWidget);
     expect(find.text('＋ Add product'), findsOneWidget);
   });
+
+  testWidgets('Hero backdrop switcher cycles background images cleanly',
+      (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 900);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) =>
+                CatalogProvider(repository: InMemoryCatalogRepository()),
+          ),
+        ],
+        child: const WaksheAgrotechApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('🌾 Fields'), findsOneWidget);
+    expect(find.text('⚒️ Forge'), findsOneWidget);
+    expect(find.text('🌿 Brand'), findsOneWidget);
+
+    bool hasHeroAsset(String path) => tester
+        .widgetList<Image>(find.byType(Image))
+        .any((img) => img.image is AssetImage && (img.image as AssetImage).assetName == path);
+
+    expect(hasHeroAsset('assets/backgrounds/hero_golden_fields.jpg'), isTrue);
+
+    await tester.tap(find.text('⚒️ Forge'));
+    await tester.pumpAndSettle();
+    expect(hasHeroAsset('assets/backgrounds/hero_heritage_forge.jpg'), isTrue);
+
+    await tester.tap(find.text('🌿 Brand'));
+    await tester.pumpAndSettle();
+    expect(hasHeroAsset('assets/backgrounds/hero_modern_agri.jpg'), isTrue);
+  });
 }

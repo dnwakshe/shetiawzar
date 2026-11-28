@@ -21,11 +21,50 @@ class HomeShell extends StatefulWidget {
   State<HomeShell> createState() => _HomeShellState();
 }
 
+enum _HeroBackdrop {
+  fields(
+    label: '🌾 Fields',
+    assetPath: 'assets/backgrounds/hero_golden_fields.jpg',
+    startAlpha: 0.90,
+    midAlpha: 0.56,
+    endAlpha: 0.16,
+  ),
+  forge(
+    label: '⚒️ Forge',
+    assetPath: 'assets/backgrounds/hero_heritage_forge.jpg',
+    startAlpha: 0.92,
+    midAlpha: 0.62,
+    endAlpha: 0.22,
+  ),
+  brand(
+    label: '🌿 Brand',
+    assetPath: 'assets/backgrounds/hero_modern_agri.jpg',
+    startAlpha: 0.72,
+    midAlpha: 0.30,
+    endAlpha: 0.08,
+  );
+
+  final String label;
+  final String assetPath;
+  final double startAlpha;
+  final double midAlpha;
+  final double endAlpha;
+
+  const _HeroBackdrop({
+    required this.label,
+    required this.assetPath,
+    required this.startAlpha,
+    required this.midAlpha,
+    required this.endAlpha,
+  });
+}
+
 class _HomeShellState extends State<HomeShell> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _productsKey = GlobalKey();
+  _HeroBackdrop _selectedHeroBackdrop = _HeroBackdrop.fields;
 
   @override
   void dispose() {
@@ -303,34 +342,48 @@ class _HomeShellState extends State<HomeShell> {
             // Sticky Topbar
             _buildTopBar(context, provider, isMobile),
 
-            // Scrollable Content
+            // Scrollable Content with subtle botanical backdrop
             Expanded(
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 1440),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        if (isShop) ...[
-                          _buildHeroSection(context, isMobile),
-                          _buildFeatureHighlights(isMobile),
-                          _buildProductsSection(context, provider, isMobile),
-                        ] else if (isAdmin) ...[
-                          if (provider.isAdminAuthenticated)
-                            _buildAdminView(context, provider, isMobile)
-                          else
-                            _buildAdminLoginChallenge(
-                              context,
-                              provider,
-                              isMobile,
-                            ),
-                        ] else if (isAccount) ...[
-                          _buildAccountView(context, provider, isMobile),
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: AppColors.cream,
+                  image: DecorationImage(
+                    image: AssetImage(
+                      'assets/backgrounds/page_bg_botanical.jpg',
+                    ),
+                    repeat: ImageRepeat.repeat,
+                    fit: BoxFit.none,
+                    scale: 1.8,
+                    opacity: 0.55,
+                  ),
+                ),
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 1440),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (isShop) ...[
+                            _buildHeroSection(context, isMobile),
+                            _buildFeatureHighlights(isMobile),
+                            _buildProductsSection(context, provider, isMobile),
+                          ] else if (isAdmin) ...[
+                            if (provider.isAdminAuthenticated)
+                              _buildAdminView(context, provider, isMobile)
+                            else
+                              _buildAdminLoginChallenge(
+                                context,
+                                provider,
+                                isMobile,
+                              ),
+                          ] else if (isAccount) ...[
+                            _buildAccountView(context, provider, isMobile),
+                          ],
+                          _buildFooter(isMobile),
                         ],
-                        _buildFooter(isMobile),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -666,9 +719,12 @@ class _HomeShellState extends State<HomeShell> {
   }
 
   // ==========================================
-  // HERO SECTION (Responsive with real agricultural artwork)
+  // HERO SECTION (Responsive with scenic agricultural backgrounds)
   // ==========================================
   Widget _buildHeroSection(BuildContext context, bool isMobile) {
+    final radius = BorderRadius.circular(isMobile ? 20 : 24);
+    final backdrop = _selectedHeroBackdrop;
+
     return Container(
       margin: EdgeInsets.fromLTRB(
         isMobile ? 14 : 20,
@@ -677,94 +733,238 @@ class _HomeShellState extends State<HomeShell> {
         isMobile ? 16 : 20,
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(isMobile ? 20 : 24),
+        borderRadius: radius,
         gradient: const LinearGradient(
           colors: [AppColors.green, AppColors.green2, AppColors.greenLight],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.green.withValues(alpha: 0.22),
+            blurRadius: 24,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final isNarrow = constraints.maxWidth < 680 || isMobile;
+      child: ClipRRect(
+        borderRadius: radius,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isNarrow = constraints.maxWidth < 680 || isMobile;
 
-          if (isNarrow) {
-            return Padding(
-              padding: EdgeInsets.all(isMobile ? 18 : 26),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeroCopy(context, isMobile: true),
-                  const SizedBox(height: 16),
-                  Center(
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.2),
-                        ),
+            return Stack(
+              children: [
+                // Background Image Layer
+                Positioned.fill(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 400),
+                    child: Image.asset(
+                      backdrop.assetPath,
+                      key: ValueKey(backdrop),
+                      width: double.infinity,
+                      height: double.infinity,
+                      fit: BoxFit.cover,
+                      alignment: isNarrow
+                          ? Alignment.center
+                          : Alignment.centerRight,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const SizedBox.shrink(),
+                    ),
+                  ),
+                ),
+
+                // Directional Emerald Scrim for guaranteed text contrast
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: isNarrow
+                            ? Alignment.topCenter
+                            : Alignment.centerLeft,
+                        end: isNarrow
+                            ? Alignment.bottomCenter
+                            : Alignment.centerRight,
+                        stops: const [0.0, 0.55, 1.0],
+                        colors: [
+                          AppColors.green.withValues(
+                            alpha: backdrop.startAlpha,
+                          ),
+                          AppColors.green.withValues(alpha: backdrop.midAlpha),
+                          AppColors.green2.withValues(alpha: backdrop.endAlpha),
+                        ],
                       ),
-                      child: Image.asset(
-                        'assets/1000562171.png',
-                        height: isMobile ? 140 : 180,
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          height: 130,
-                          alignment: Alignment.center,
-                          child: const Icon(
-                            Icons.agriculture_rounded,
-                            size: 80,
-                            color: Colors.white,
+                    ),
+                  ),
+                ),
+
+                // Foreground Content
+                if (isNarrow)
+                  Padding(
+                    padding: EdgeInsets.all(isMobile ? 18 : 26),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: _buildHeroBackdropSwitcher(isMobile: true),
                           ),
                         ),
-                      ),
+                        _buildHeroCopy(context, isMobile: true),
+                        const SizedBox(height: 16),
+                        Center(
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.black.withValues(alpha: 0.24),
+                              border: Border.all(
+                                color: AppColors.gold.withValues(alpha: 0.5),
+                                width: 1.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.35),
+                                  blurRadius: 18,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
+                            ),
+                            child: Image.asset(
+                              'assets/1000562171.png',
+                              height: isMobile ? 160 : 196,
+                              width: isMobile ? 160 : 196,
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Container(
+                                    height: 130,
+                                    alignment: Alignment.center,
+                                    child: const Icon(
+                                      Icons.agriculture_rounded,
+                                      size: 80,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                  )
+                else
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(42, 18, 32, 0),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: _buildHeroBackdropSwitcher(isMobile: false),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 6,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                42,
+                                14,
+                                24,
+                                42,
+                              ),
+                              child: _buildHeroCopy(context, isMobile: false),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 4,
+                            child: Center(
+                              child: Container(
+                                margin: const EdgeInsets.fromLTRB(0, 8, 32, 32),
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.black.withValues(alpha: 0.24),
+                                  border: Border.all(
+                                    color: AppColors.gold.withValues(
+                                      alpha: 0.55,
+                                    ),
+                                    width: 1.5,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(
+                                        alpha: 0.35,
+                                      ),
+                                      blurRadius: 24,
+                                      offset: const Offset(0, 10),
+                                    ),
+                                  ],
+                                ),
+                                child: Image.asset(
+                                  'assets/1000562171.png',
+                                  height: 230,
+                                  width: 230,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(
+                                        Icons.agriculture_rounded,
+                                        size: 130,
+                                        color: Colors.white,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
-              ),
+              ],
             );
-          }
+          },
+        ),
+      ),
+    );
+  }
 
-          return Row(
-            children: [
-              Expanded(
-                flex: 6,
-                child: Padding(
-                  padding: const EdgeInsets.all(42),
-                  child: _buildHeroCopy(context, isMobile: false),
+  Widget _buildHeroBackdropSwitcher({required bool isMobile}) {
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.32),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.22)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: _HeroBackdrop.values.map((option) {
+          final isSelected = option == _selectedHeroBackdrop;
+          return InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: () => setState(() => _selectedHeroBackdrop = option),
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 8 : 10,
+                vertical: isMobile ? 4 : 5,
+              ),
+              decoration: BoxDecoration(
+                color: isSelected ? AppColors.lime : Colors.transparent,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                option.label,
+                style: TextStyle(
+                  color: isSelected ? AppColors.green : Colors.white,
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                  fontSize: isMobile ? 10.5 : 11,
                 ),
               ),
-              Expanded(
-                flex: 4,
-                child: Center(
-                  child: Container(
-                    margin: const EdgeInsets.only(right: 32),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
-                      ),
-                    ),
-                    child: Image.asset(
-                      'assets/1000562171.png',
-                      height: 220,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) => const Icon(
-                        Icons.agriculture_rounded,
-                        size: 130,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           );
-        },
+        }).toList(),
       ),
     );
   }
@@ -2856,230 +3056,250 @@ class _HomeShellState extends State<HomeShell> {
   Widget _buildFooter(bool isMobile) {
     return Container(
       margin: const EdgeInsets.only(top: 36),
-      color: AppColors.footerBg,
-      padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 18 : 24,
-        vertical: isMobile ? 22 : 28,
+      decoration: const BoxDecoration(
+        color: AppColors.footerBg,
+        image: DecorationImage(
+          image: AssetImage('assets/backgrounds/hero_modern_agri.jpg'),
+          fit: BoxFit.cover,
+          alignment: Alignment.bottomRight,
+          opacity: 0.16,
+        ),
       ),
-      child: isMobile
-          ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'वाक्षे ॲग्रोटेक · WAKSHE AGROTECH',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13.5,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  '${LauncherHelper.proprietor} — ${LauncherHelper.businessRole}',
-                  style: TextStyle(
-                    color: AppColors.gold,
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  LauncherHelper.fullAddress,
-                  style: TextStyle(
-                    color: Color(0xFFD8E4D8),
-                    fontSize: 11,
-                    height: 1.3,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 6,
-                  children: [
-                    InkWell(
-                      onTap: () => LauncherHelper.callSupport(),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.phone, size: 14, color: AppColors.gold),
-                          SizedBox(width: 4),
-                          Text(
-                            LauncherHelper.phoneDisplay,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              AppColors.footerBg.withValues(alpha: 0.90),
+              AppColors.footerBg.withValues(alpha: 0.72),
+            ],
+          ),
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? 18 : 24,
+          vertical: isMobile ? 22 : 28,
+        ),
+        child: isMobile
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'वाक्षे ॲग्रोटेक · WAKSHE AGROTECH',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13.5,
                     ),
-                    InkWell(
-                      onTap: () => LauncherHelper.openEmail(),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.email_outlined,
-                            size: 13,
-                            color: AppColors.lime,
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            LauncherHelper.email,
-                            style: TextStyle(
-                              color: AppColors.lime,
-                              fontSize: 11.5,
-                            ),
-                          ),
-                        ],
-                      ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    '${LauncherHelper.proprietor} — ${LauncherHelper.businessRole}',
+                    style: TextStyle(
+                      color: AppColors.gold,
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w600,
                     ),
-                    InkWell(
-                      onTap: () => LauncherHelper.openMap(),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.map, size: 14, color: AppColors.lime),
-                          SizedBox(width: 4),
-                          Text(
-                            'Google Maps ↗',
-                            style: TextStyle(
-                              color: AppColors.lime,
-                              fontSize: 11.5,
-                            ),
-                          ),
-                        ],
-                      ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    LauncherHelper.fullAddress,
+                    style: TextStyle(
+                      color: Color(0xFFD8E4D8),
+                      fontSize: 11,
+                      height: 1.3,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  '✦ विश्वासाचं नाव, शेतकऱ्यांचं काम ✦ • शिवकालीन परंपरेतील कारागिरी',
-                  style: TextStyle(color: Color(0xFF9FB2A2), fontSize: 10.5),
-                ),
-              ],
-            )
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 6,
                     children: [
-                      const Text(
-                        'वाक्षे ॲग्रोटेक · WAKSHE AGROTECH',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                      InkWell(
+                        onTap: () => LauncherHelper.callSupport(),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.phone, size: 14, color: AppColors.gold),
+                            SizedBox(width: 4),
+                            Text(
+                              LauncherHelper.phoneDisplay,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 3),
-                      const Text(
-                        '${LauncherHelper.proprietor} — ${LauncherHelper.businessRole}',
-                        style: TextStyle(
-                          color: AppColors.gold,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                      InkWell(
+                        onTap: () => LauncherHelper.openEmail(),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.email_outlined,
+                              size: 13,
+                              color: AppColors.lime,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              LauncherHelper.email,
+                              style: TextStyle(
+                                color: AppColors.lime,
+                                fontSize: 11.5,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        LauncherHelper.fullAddress,
-                        style: TextStyle(
-                          color: Color(0xFFD8E4D8),
-                          fontSize: 11.5,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      const Text(
-                        '${LauncherHelper.qualityQuote} • ${LauncherHelper.trustTagline}',
-                        style: TextStyle(
-                          color: Color(0xFF9FB2A2),
-                          fontSize: 11,
-                          fontStyle: FontStyle.italic,
+                      InkWell(
+                        onTap: () => LauncherHelper.openMap(),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.map, size: 14, color: AppColors.lime),
+                            SizedBox(width: 4),
+                            Text(
+                              'Google Maps ↗',
+                              style: TextStyle(
+                                color: AppColors.lime,
+                                fontSize: 11.5,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(width: 24),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    InkWell(
-                      onTap: () => LauncherHelper.callSupport(),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.phone_in_talk,
-                            size: 16,
+                  const SizedBox(height: 12),
+                  const Text(
+                    '✦ विश्वासाचं नाव, शेतकऱ्यांचं काम ✦ • शिवकालीन परंपरेतील कारागिरी',
+                    style: TextStyle(color: Color(0xFF9FB2A2), fontSize: 10.5),
+                  ),
+                ],
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'वाक्षे ॲग्रोटेक · WAKSHE AGROTECH',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        const Text(
+                          '${LauncherHelper.proprietor} — ${LauncherHelper.businessRole}',
+                          style: TextStyle(
                             color: AppColors.gold,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
                           ),
-                          SizedBox(width: 6),
-                          Text(
-                            LauncherHelper.phoneDisplay,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          LauncherHelper.fullAddress,
+                          style: TextStyle(
+                            color: Color(0xFFD8E4D8),
+                            fontSize: 11.5,
                           ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 6),
+                        const Text(
+                          '${LauncherHelper.qualityQuote} • ${LauncherHelper.trustTagline}',
+                          style: TextStyle(
+                            color: Color(0xFF9FB2A2),
+                            fontSize: 11,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 6),
-                    InkWell(
-                      onTap: () => LauncherHelper.openEmail(),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.email_outlined,
-                            size: 14,
-                            color: AppColors.lime,
-                          ),
-                          SizedBox(width: 5),
-                          Text(
-                            LauncherHelper.email,
-                            style: TextStyle(
+                  ),
+                  const SizedBox(width: 24),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      InkWell(
+                        onTap: () => LauncherHelper.callSupport(),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.phone_in_talk,
+                              size: 16,
+                              color: AppColors.gold,
+                            ),
+                            SizedBox(width: 6),
+                            Text(
+                              LauncherHelper.phoneDisplay,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      InkWell(
+                        onTap: () => LauncherHelper.openEmail(),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.email_outlined,
+                              size: 14,
                               color: AppColors.lime,
-                              fontSize: 12,
                             ),
-                          ),
-                        ],
+                            SizedBox(width: 5),
+                            Text(
+                              LauncherHelper.email,
+                              style: TextStyle(
+                                color: AppColors.lime,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    InkWell(
-                      onTap: () => LauncherHelper.openMap(),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.location_on,
-                            size: 15,
-                            color: AppColors.lime,
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            'Open Factory in Google Maps ↗',
-                            style: TextStyle(
+                      const SizedBox(height: 6),
+                      InkWell(
+                        onTap: () => LauncherHelper.openMap(),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              size: 15,
                               color: AppColors.lime,
-                              fontSize: 12,
                             ),
-                          ),
-                        ],
+                            SizedBox(width: 4),
+                            Text(
+                              'Open Factory in Google Maps ↗',
+                              style: TextStyle(
+                                color: AppColors.lime,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                    ],
+                  ),
+                ],
+              ),
+      ),
     );
   }
 }
@@ -3144,8 +3364,16 @@ class _FeatureCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(17),
       decoration: BoxDecoration(
-        color: AppColors.featureBg,
+        color: Colors.white.withValues(alpha: 0.92),
         borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: AppColors.line),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.green.withValues(alpha: 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [

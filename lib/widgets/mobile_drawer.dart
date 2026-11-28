@@ -50,7 +50,7 @@ class MobileDrawer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'प्रो. प्रा. सौ. माया मोहन वाक्षे',
+                LauncherHelper.proprietor,
                 style: TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 14,
@@ -226,7 +226,7 @@ class MobileDrawer extends StatelessWidget {
                       ),
                     ),
                     child: const Text(
-                      'प्रो. प्रा. सौ. माया मोहन वाक्षे',
+                      LauncherHelper.proprietor,
                       style: TextStyle(
                         color: AppColors.gold,
                         fontSize: 10.5,
@@ -438,7 +438,7 @@ class MobileDrawer extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     subtitle: const Text(
-                      '${LauncherHelper.phoneDisplay} · प्रो. माया वाक्षे',
+                      '${LauncherHelper.phoneDisplay} · ${LauncherHelper.proprietor}',
                       style: TextStyle(fontSize: 11, color: AppColors.muted),
                     ),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 13, color: AppColors.muted),
